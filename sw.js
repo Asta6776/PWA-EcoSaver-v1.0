@@ -1,63 +1,83 @@
 // Increment this version every time you deploy an update!
-const CACHE_VERSION = 'ecosaver-v1.0.1';
-const CACHE_NAME = `static-${EcoSaver-v1.0.0}`;
+const CACHE_NAME = 'ecosaver-v1.0.1';
 
+// The core files needed to boot up the app shell
 const PRE_CACHE = [
-  '.',
-  'index.html',
-  'manifest.json'
-  // Add your icon files here if you want them pre-cached:
-  // 'icon-192.png',
-  // 'icon-512.png'
+  '/',
+  '/index.html',
+  '/manifest.json'
+  // If you have specific CSS or JS files, add them here, for example:
+  // '/styles.css',
+  // '/app.js'
 ];
 
-// Install – pre‑cache the core files
+// 1. Install – pre‑cache the core files
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(EcoSaver-v1.0.0).then(cache => cache.addAll(PRE_CACHE))
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('Pre-caching core assets...');
+        return cache.addAll(PRE_CACHE);
+      })
+      .then(() => self.skipWaiting()) // Force activation immediately
   );
-  self.skipWaiting(); // activate immediately
 });
 
-// Activate – delete old caches
+// 2. Activate – clean up old legacy caches
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(key => key !== EcoSaver-v1.0.0).map(key => caches.delete(key)))
-    )
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            console.log('Deleting old cache:', key);
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim()) // Take control of open pages immediately
   );
-  self.clients.claim();
 });
 
-// Fetch – network‑first for pages, cache‑first for assets
+// 3. Fetch – Cache-First strategy with Network Fallback (Ensures 100% offline stability)
 self.addEventListener('fetch', event => {
-  const { request } = event;
+  // Skip cross-origin or non-GET requests (like APIs if you have any)
+  if (event.request.method !== 'GET') return;
 
-  // For navigation (HTML) always try the network first → up‑to‑date page
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          // Update the cache with the fresh copy
-          const responseClone = response.clone();
-          caches.open(EcoSaver-v1.0.0).then(cache => cache.put(request, responseClone));
-          return response;
-        })
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
-
-  // For everything else (icons, SVGs, fonts, API calls…), cache first, then network
   event.respondWith(
-    caches.match(request).then(cached => {
-      const fetchPromise = fetch(request).then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200) {
-          caches.open(EcoSaver-v1.0.0).then(cache => cache.put(request, networkResponse.clone()));
+    caches.match(event.request).then(cachedResponse => {
+      // If the file is in the cache, serve it instantly! (Even after 5 hours)
+      if (cachedResponse) {
+        
+        // OPTIONAL: Fetch a fresh copy in the background to update the cache for next time
+        fetch(event.request).then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse));
+          }
+        }).catch(() => /* Ignore network failures when updating background */ {});
+
+        return cachedResponse;
+      }
+
+      // If it's NOT in the cache, go to the network
+      return fetch(event.request).then(networkResponse => {
+        if (!networkResponse || networkResponse.status !== 200) {
+          return networkResponse;
         }
+
+        // Dynamically cache new assets found while browsing
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseToCache);
+        });
+
         return networkResponse;
-      }).catch(() => cached);
-      return cached || fetchPromise;
+      }).catch(() => {
+        // Fallback for navigation requests if network fails completely and not in cache
+        if (event.request.mode === 'navigate') {
+          return caches.match('/index.html');
+        }
+      });
     })
   );
 });
