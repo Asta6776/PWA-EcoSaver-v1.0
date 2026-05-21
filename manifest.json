@@ -7,5 +7,5 @@
   "background_color": "#0d2218",
   "theme_color": "#0d2218",
   "orientation": "portrait-primary",
-  "icons": []   // Remove icons or add real images
+  "icons": []
 }
