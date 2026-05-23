@@ -11,17 +11,16 @@
   
   <meta http-equiv="Content-Security-Policy" 
         content="default-src 'self'; 
-                 script-src 'self' https://apis.google.com https://www.gstatic.com https://firebaseapis.com 'unsafe-inline'; 
+                 script-src 'self' https://apis.google.com https://www.gstatic.com https://firebaseapis.com https://*.firebaseapp.com 'unsafe-inline'; 
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
                  font-src 'self' https://fonts.gstatic.com;
-                 frame-src https://accounts.google.com; 
+                 frame-src https://accounts.google.com https://*.firebaseapp.com; 
                  connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com;">
                  
   <title>EcoSaver</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ========== ALL ORIGINAL STYLES (unchanged – included for completeness) ========== */
     :root {
       --c0: #0d2218;
       --c1: #1a3a2a;
@@ -571,83 +570,39 @@
     /* Login Container */
     #login-container {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(ellipse at 20% 10%, #1a3a2a 0%, #0d2218 100%);
       z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; text-align: center;
       transition: opacity 0.4s ease;
     }
-    #login-container.hidden {
-      display: none;
-    }
+    #login-container.hidden { display: none; }
     .login-card {
       background: rgba(29,58,42,0.85);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(143,212,140,0.25);
-      border-radius: 28px;
-      padding: 32px 28px;
-      width: 90%;
-      max-width: 400px;
+      border-radius: 28px; padding: 32px 28px;
+      width: 90%; max-width: 400px;
     }
     .login-card .lock-icon {
       background: rgba(143,212,140,0.15);
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 70px; height: 70px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
       margin: 0 auto 20px auto;
     }
-    .login-card .lock-icon svg {
-      width: 36px;
-      height: 36px;
-      color: var(--c5);
-    }
-    .login-card h2 {
-      font-family: 'Fraunces', serif;
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--c6);
-      margin-bottom: 8px;
-    }
-    .login-card p {
-      font-size: 14px;
-      color: rgba(200,232,192,0.7);
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
+    .login-card .lock-icon svg { width: 36px; height: 36px; color: var(--c5); }
+    .login-card h2 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: var(--c6); margin-bottom: 8px; }
+    .login-card p { font-size: 14px; color: rgba(200,232,192,0.7); line-height: 1.5; margin-bottom: 20px; }
     #google-login-btn {
-      background: #fff;
-      border: none;
-      border-radius: 40px;
-      padding: 12px 20px;
-      font-size: 16px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      margin-bottom: 20px;
-      transition: transform 0.1s;
+      background: #fff; border: none; border-radius: 40px;
+      padding: 12px 20px; font-size: 16px; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 12px;
+      cursor: pointer; margin-bottom: 20px; transition: transform 0.1s;
     }
     #google-login-btn:active { transform: scale(0.96); }
-    .login-footer {
-      border-top: 1px solid rgba(143,212,140,0.2);
-      padding-top: 20px;
-    }
-    .login-footer p {
-      font-size: 11px;
-      color: rgba(200,232,192,0.5);
-      margin: 4px 0;
-    }
+    .login-footer { border-top: 1px solid rgba(143,212,140,0.2); padding-top: 20px; }
+    .login-footer p { font-size: 11px; color: rgba(200,232,192,0.5); margin: 4px 0; }
   </style>
 </head>
 <body>
@@ -658,7 +613,6 @@
   <div class="leaf-overlay"></div>
 </div>
 
-<!-- Main App (initially hidden) -->
 <div id="app" style="display: none;">
   <div class="status-bar">
     <div class="app-name">🌿 EcoSaver</div>
@@ -746,7 +700,6 @@
 
 <button class="fab" id="fab" style="display: none;">+</button>
 
-<!-- Login Container (shown by default) -->
 <div id="login-container">
   <div class="login-card">
     <div class="lock-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clip-rule="evenodd"/></svg></div>
@@ -760,7 +713,6 @@
   </div>
 </div>
 
-<!-- Sheet Modal (Add/Edit Appliance) -->
 <div class="sheet-overlay" id="sheet-overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
@@ -773,7 +725,6 @@
   <div class="sheet-actions"><button class="sheet-btn sheet-btn-cancel" id="sheet-cancel">Cancel</button><button class="sheet-btn sheet-btn-save" id="sheet-save">Save</button></div>
 </div>
 
-<!-- Donation Modal -->
 <div class="donate-overlay" id="donate-overlay"></div>
 <div class="donate-modal" id="donate-modal">
   <div class="donate-modal-handle"></div><div class="donate-modal-icon">☕</div>
@@ -786,7 +737,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK (CDN Modules) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -809,16 +759,19 @@
   const appContainer = document.getElementById('app');
   const fab = document.getElementById('fab');
   const signoutCardBtn = document.getElementById('logout-btn');
+  const signoutCard = document.getElementById('signout-card');
   const googleLoginBtn = document.getElementById('google-login-btn');
 
   function showApp(show) {
     if (show) {
       appContainer.style.display = 'flex';
       fab.style.display = 'flex';
+      if (signoutCard) signoutCard.style.display = 'block';
       loginContainer.classList.add('hidden');
     } else {
       appContainer.style.display = 'none';
       fab.style.display = 'none';
+      if (signoutCard) signoutCard.style.display = 'none';
       loginContainer.classList.remove('hidden');
     }
   }
@@ -864,7 +817,6 @@
   });
 </script>
 
-<!-- Legacy app script (all original functions) -->
 <script>
   'use strict';
 
@@ -1012,7 +964,7 @@
     const aneco = document.getElementById('aneco-section');
     if (kwh > 0) {
       aneco.style.display = 'block'; const B = calcANECO(kwh);
-      document.getElementById('aneco-inner').innerHTML = `<div class="aneco-label" style="margin-bottom:8px">Electric Cooperative Unbundled Estimate</div>${row('Generation (₱' + (7.9239 * state.rate / 12.42).toFixed(4) + '/kWh)', B.generation)}${row('Transmission (₱' + (1.6588 * state.rate / 12.42).toFixed(4) + '/kWh)', B.transmission)}${row('Govt Taxes & Others (₱' + ((0.8162+0.4839) * state.rate / 12.42).toFixed(4) + '/kWh)', B.government)}${row('Distribution (₱' + (1.5372 * state.rate / 12.42).toFixed(4) + '/kWh)', B.distribution)}<div class="aneco-row total"><span>Total Estimated Bill</span><span class="r-val">${fmtCurrency(B.total)}</span></div><div class="aneco-row" style="margin-top:6px; color:var(--c6); opacity:0.6;"><span>Effective Rate</span><span class="r-val">₱${B.ratePerKwh.toFixed(4)} / kWh</span></div>`;
+      document.getElementById('aneco-inner').innerHTML = `<div class="aneco-label" style="margin-bottom:8px">Electric Cooperative Unbundled Estimate</div>${row('Generation (₱' + (7.9239 * state.rate / 12.42).toFixed(4) + '/kWh)', B.generation)}${row('Transmission (₱' + (1.6588 * state.rate / 12.42).toFixed(4) + '/kWh)', B.transmission)}${row('Govt Taxes & Others (₱' + ((0.8162+0.4839) * state.rate / 12.42).toFixed(4) + '/government)', B.government)}${row('Distribution (₱' + (1.5372 * state.rate / 12.42).toFixed(4) + '/kWh)', B.distribution)}<div class="aneco-row total"><span>Total Estimated Bill</span><span class="r-val">${fmtCurrency(B.total)}</span></div><div class="aneco-row" style="margin-top:6px; color:var(--c6); opacity:0.6;"><span>Effective Rate</span><span class="r-val">₱${B.ratePerKwh.toFixed(4)} / kWh</span></div>`;
     } else aneco.style.display = 'none';
     const top5 = document.getElementById('top5-list');
     if (state.appliances.length === 0) top5.innerHTML = `<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance and start tracking your energy use.</div></div>`;
@@ -1138,6 +1090,7 @@
     document.getElementById('sheet-save').addEventListener('click', saveAppliance);
     document.getElementById('seg-hr').addEventListener('click', () => { setUnit('hr'); document.getElementById('f-time').value = ''; });
     document.getElementById('seg-min').addEventListener('click', () => { setUnit('min'); document.getElementById('f-time').value = ''; });
+    document.querySelectorAll('.donate-amount-btn').forEach(btn => btn.addEventListener('click', () => vibrate(40)));
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSheet(); closeDonateModal(); } if (e.key === 'Enter' && document.getElementById('sheet').classList.contains('open')) saveAppliance(); });
     document.getElementById('tips-refresh-btn').addEventListener('click', () => { cachedTips = null; fetchTips(); });
     if (state.appliances.length === 0) renderTips(null);
