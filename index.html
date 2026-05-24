@@ -606,6 +606,11 @@
   </style>
 </head>
 <body>
+<script>
+  window.onerror = function(msg, url, line, col, error) {
+    alert('SCRIPT ERROR: ' + msg + '\nLine: ' + line + ', Col: ' + col);
+  };
+</script>
 <div class="bg-fixed">
   <div class="blob blob1"></div>
   <div class="blob blob2"></div>
@@ -739,10 +744,10 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyAYQd-tzlpMYmbWL3KcWd-BO7jQGwoJJiQ",
+    apiKey: "AIzaSyAYQD-tz1pMYmbWl3Kcwd-8O7jQGwoJJiQ",
     authDomain: "ecosaver-9a4f8.firebaseapp.com",
     projectId: "ecosaver-9a4f8",
     storageBucket: "ecosaver-9a4f8.firebasestorage.app",
@@ -755,7 +760,23 @@
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  const loginContainer = document.getElementById('login-container');
+// 👇 Paste here
+getRedirectResult(auth)
+  .then((result) => {
+    if (result) {
+      console.log("Redirect sign-in success:", result.user.displayName);
+    }
+  })
+  .catch((error) => {
+    console.error("Redirect sign-in error:", error);
+    alert("Login failed: " + error.message);
+  });
+
+// 👆 End of pasted block
+
+const loginContainer = document.getElementById('login-container');
+// ... rest of the code
+
   const appContainer = document.getElementById('app');
   const fab = document.getElementById('fab');
   const signoutCardBtn = document.getElementById('logout-btn');
@@ -776,14 +797,13 @@
     }
   }
 
-  async function handleLogin() {
+async function handleLogin() {
+    alert("Login button clicked!");
     try {
-      console.log("Login button clicked – starting signInWithPopup");
-      const result = await signInWithPopup(auth, provider);
-      console.log("Success:", result.user.displayName);
+      await signInWithRedirect(auth, provider);
     } catch (error) {
-      console.error("Login error:", error);
-      alert("Firebase Error: " + error.code + " - " + error.message);
+      console.error("Login redirect error:", error);
+      alert("Login failed: " + error.message);
     }
   }
 
