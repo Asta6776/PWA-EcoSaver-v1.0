@@ -15,7 +15,7 @@
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
                  font-src 'self' https://fonts.gstatic.com;
                  frame-src https://accounts.google.com https://*.firebaseapp.com; 
-                 connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com;">
+                 connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://securetoken.googleapis.com;">
                  
   <title>EcoSaver</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -598,9 +598,11 @@
       background: #fff; border: none; border-radius: 40px;
       padding: 12px 20px; font-size: 16px; font-weight: 500;
       display: inline-flex; align-items: center; gap: 12px;
-      cursor: pointer; margin-bottom: 20px; transition: transform 0.1s;
+      cursor: pointer; margin-bottom: 20px; transition: transform 0.1s, opacity 0.2s;
+      width: 100%; justify-content: center;
     }
     #google-login-btn:active { transform: scale(0.96); }
+    #google-login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .login-footer { border-top: 1px solid rgba(143,212,140,0.2); padding-top: 20px; }
     .login-footer p { font-size: 11px; color: rgba(200,232,192,0.5); margin: 4px 0; }
   </style>
@@ -706,7 +708,7 @@
     <h2>Secure Sign In</h2>
     <p>Access your dashboard using your Google account</p>
     <button id="google-login-btn">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon" style="width:20px; height:20px; margin-right:8px; vertical-align:middle;">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon" style="width:20px; height:20px;">
       Sign in with Google
     </button>
     <div class="login-footer"><p>🛡️ Secured by Firebase & Google</p><p>We never see your password – only your email and name.</p></div>
@@ -737,9 +739,16 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ===================== FIREBASE AUTH (Module) ===================== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,       // ✅ CHANGED: popup instead of redirect
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAYQD-tz1pMYmbWl3Kcwd-8O7jQGwoJJiQ",
@@ -755,28 +764,12 @@
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-// 👇 Paste here
-getRedirectResult(auth)
-  .then((result) => {
-    if (result) {
-      console.log("Redirect sign-in success:", result.user.displayName);
-    }
-  })
-  .catch((error) => {
-    console.error("Redirect sign-in error:", error);
-    alert("Login failed: " + error.message);
-  });
-
-// 👆 End of pasted block
-
-const loginContainer = document.getElementById('login-container');
-// ... rest of the code
-
-  const appContainer = document.getElementById('app');
-  const fab = document.getElementById('fab');
-  const signoutCardBtn = document.getElementById('logout-btn');
-  const signoutCard = document.getElementById('signout-card');
+  const loginContainer = document.getElementById('login-container');
+  const appContainer   = document.getElementById('app');
+  const fab            = document.getElementById('fab');
+  const signoutCard    = document.getElementById('signout-card');
   const googleLoginBtn = document.getElementById('google-login-btn');
+  const logoutBtn      = document.getElementById('logout-btn');
 
   function showApp(show) {
     if (show) {
@@ -792,46 +785,41 @@ const loginContainer = document.getElementById('login-container');
     }
   }
 
-async function handleLogin() {
-    alert("Login button clicked!");
+  // ✅ FIX: Use signInWithPopup — no redirect loop
+  async function handleLogin() {
+    googleLoginBtn.disabled = true;
+    googleLoginBtn.textContent = 'Signing in…';
     try {
-      await signInWithRedirect(auth, provider);
+      await signInWithPopup(auth, provider);
+      // onAuthStateChanged fires automatically — no need to do anything here
     } catch (error) {
-      console.error("Login redirect error:", error);
-      alert("Login failed: " + error.message);
+      googleLoginBtn.disabled = false;
+      googleLoginBtn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon" style="width:20px;height:20px;"> Sign in with Google';
+      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+        console.error('Login error:', error);
+        alert('Login failed: ' + error.message);
+      }
     }
   }
 
   async function handleSignOut() {
     try {
       await signOut(auth);
-      console.log("User signed out");
     } catch (error) {
-      console.error("Sign out error:", error);
-      alert("Sign out failed: " + error.message);
+      console.error('Sign out error:', error);
     }
   }
 
-  if (googleLoginBtn) {
-    googleLoginBtn.addEventListener('click', handleLogin);
-    console.log("Login button listener attached");
-  } else {
-    console.error("Could not find button with id 'google-login-btn'");
-  }
+  googleLoginBtn.addEventListener('click', handleLogin);
+  if (logoutBtn) logoutBtn.addEventListener('click', handleSignOut);
 
-  if (signoutCardBtn) signoutCardBtn.addEventListener('click', handleSignOut);
-
+  // ✅ This is the single source of truth for auth state
   onAuthStateChanged(auth, (user) => {
-    if (user) {
-      alert("Auth state: user signed in - " + user.displayName);
-      showApp(true);
-    } else {
-      alert("Auth state: signed out (no user)");
-      showApp(false);
-    }
+    showApp(!!user);
   });
 </script>
 
+<!-- ===================== APP LOGIC ===================== -->
 <script>
   'use strict';
 
