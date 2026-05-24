@@ -828,10 +828,10 @@ async function handleLogin() {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log("User is signed in:", user.displayName);
+      alert("Auth state: user signed in - " + user.displayName);
       showApp(true);
     } else {
-      console.log("User is signed out");
+      alert("Auth state: signed out (no user)");
       showApp(false);
     }
   });
