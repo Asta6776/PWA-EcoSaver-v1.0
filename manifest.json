@@ -1,25 +1,22 @@
 {
-  "name": "EcoSaver",
+  "name": "EcoSaver – ANECO Bill Tracker",
   "short_name": "EcoSaver",
-  "description": "Track your household energy consumption, get personalized tips, and save on your electric bill.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "description": "Track your appliances, estimate your bill with ANECO unbundled rates, and get energy-saving tips.",
+  "start_url": ".",
   "display": "standalone",
-  "theme_color": "#0d2218",
   "background_color": "#0d2218",
-  "orientation": "portrait",
+  "theme_color": "#0d2218",
+  "orientation": "any",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 24 24'%3E%3Cpath fill='%238fd48c' d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 15l-4-4 1.4-1.4 2.6 2.6 6.6-6.6L19 9l-8 8z'/%3E%3C/svg%3E",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 24 24'%3E%3Cpath fill='%238fd48c' d='M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1 15l-4-4 1.4-1.4 2.6 2.6 6.6-6.6L19 9l-8 8z'/%3E%3C/svg%3E",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     }
   ]
 }
