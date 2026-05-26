@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ============ ALL STYLES (unchanged from previous working version) ============ */
+    /* ============ ALL STYLES (unchanged) ============ */
     :root {
       --c0: #0d2218; --c1: #1a3a2a; --c2: #2d5a3d; --c3: #3d7a52; --c4: #52a86e; --c5: #8fd48c; --c6: #c8e8c0; --c7: #f4f0e6;
       --amber: #f59e0b; --red: #ef4444; --glass: rgba(29,58,42,0.55); --glass2: rgba(45,90,61,0.4);
@@ -285,12 +285,17 @@
     .pending-banner { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px; font-size: 13px; color: #fde68a; line-height: 1.55; }
     .pending-banner strong { display: block; font-size: 14px; margin-bottom: 4px; }
     .aneco-section-header { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 600; color: var(--c4); margin-top: 12px; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(143,212,140,0.15); }
-    .history-chart { margin-bottom: 16px; }
+    .validation-result { font-size: 13px; background: rgba(13,34,24,0.5); border-radius: var(--radius-sm); padding: 12px; margin-top: 12px; line-height: 1.6; }
+    .validation-positive { color: var(--c5); }
+    .validation-negative { color: #f87171; }
     @media print {
       body * { visibility: hidden; }
       #app, #app * { visibility: visible; }
-      #app { position: absolute; top: 0; left: 0; }
-      .fab, .bottom-nav, .sheet-overlay, .sheet, #login-container { display: none !important; }
+      #app { position: absolute; top: 0; left: 0; background: white; color: black; }
+      .fab, .bottom-nav, .sheet-overlay, .sheet, #login-container, .status-bar, .bg-fixed, .hero-card, .stats-row, .vampire-card, .aneco-section, #bill-upload-section, .card .section-title, .tips-refresh-btn, .donate-card, .nav-tab, .settings-btn, .plan-card, .pending-banner, .grade-big, .grade-appliance-row, .aneco-toggle-btn, .aneco-body, .three-box-card .form-input, .three-box-card .form-group, .three-box-card button { display: none !important; }
+      .validation-result { display: block !important; visibility: visible !important; background: white; color: black; border: 1px solid #ccc; margin: 20px; }
+      .three-box-card, #three-box-card { display: block !important; }
+      #three-box-card .section-title, #three-box-card .validation-result { display: block !important; }
     }
   </style>
 </head>
@@ -306,7 +311,7 @@
     <div class="view active" id="view-home">
       <div id="alerts-area"></div>
       <div class="hero-card">
-        <div class="hero-label">Estimated Monthly Bill</div>
+        <div class="hero-label">Estimated Monthly Bill (ANECO Detailed)</div>
         <div class="hero-amount"><span>₱</span><span id="hero-num">0.00</span></div>
         <div class="progress-bar"><div class="progress-fill green" id="hero-progress" style="width:0%"></div></div>
         <div class="budget-row"><span id="budget-used-lbl">₱0.00 used</span><span id="budget-left-lbl">₱1,000.00 left</span></div>
@@ -315,9 +320,6 @@
         <div class="stat-card"><div class="stat-label">kWh/mo</div><div class="stat-val" id="stat-kwh-mo">0</div></div>
         <div class="stat-card"><div class="stat-label">kWh/day</div><div class="stat-val" id="stat-kwh-day">0.0</div></div>
         <div class="stat-card"><div class="stat-label">Appliances</div><div class="stat-val" id="stat-count">0</div></div>
-      </div>
-      <div class="history-chart" id="history-chart" style="display:none">
-        <div class="card"><div class="section-title">📈 6‑Month Trend</div><canvas id="history-canvas" height="200"></canvas></div>
       </div>
       <div id="vampire-area"></div>
       <div class="aneco-section" id="aneco-section" style="display:none">
@@ -328,6 +330,24 @@
         <button class="aneco-toggle-btn" id="bill-toggle"><span>📄 Compare with Actual Bill</span><span class="chevron">▼</span></button>
         <div class="aneco-body" id="bill-body"><div class="aneco-inner" id="bill-inner"></div></div>
       </div>
+      <!-- THREE-BOX VALIDATION (PREMIUM ONLY) -->
+      <div class="card" id="three-box-card" style="display:none;">
+        <div class="section-title">🔍 3‑Point Bill Validation</div>
+        <div class="form-group">
+          <label class="form-label">1. Meter Reading (kWh)</label>
+          <input type="number" id="meter-kwh" class="form-input" placeholder="e.g. 215.5" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">2. Rated Billing from Cooperative (₱)</label>
+          <input type="number" id="coop-bill" class="form-input" placeholder="e.g. 2850.00" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">3. Prototype's Estimated Bill (₱)</label>
+          <input type="number" id="prototype-bill" class="form-input" readonly value="0.00" step="0.01">
+        </div>
+        <button id="validate-bill-btn" class="settings-btn btn-primary">Validate & Compare</button>
+        <div id="validation-result" class="validation-result" style="display:none;"></div>
+      </div>
       <div class="card"><div class="section-title">Top Consumers</div><div id="top5-list"><div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance.</div></div></div></div>
     </div>
     <div class="view" id="view-devices"><div class="section-title" style="margin-bottom:16px;font-size:16px">My Appliances</div><div id="devices-list"></div></div>
@@ -337,7 +357,7 @@
     <div class="view" id="view-settings">
       <div class="section-title" style="margin-bottom:16px;font-size:16px">Settings</div>
       <div class="card">
-        <div class="settings-group"><div class="settings-label">Electricity Rate (₱/kWh)</div><input type="number" class="settings-input" id="s-rate" step="0.01" min="0.01"></div>
+        <div class="settings-group"><div class="settings-label">Electricity Rate (₱/kWh) – fallback only</div><input type="number" class="settings-input" id="s-rate" step="0.01" min="0.01"></div>
         <div class="settings-group"><div class="settings-label">Monthly Budget (₱)</div><input type="number" class="settings-input" id="s-budget" step="1" min="1"></div>
         <button class="settings-btn btn-primary" id="s-save">Save Settings</button>
         <button class="settings-btn btn-secondary" id="s-reset">Reset to Defaults</button>
@@ -540,9 +560,33 @@ function getEmoji(name) {
 }
 function freqMult(f) { return {daily:1,'3x':3/7,weekends:2/7,'1x':1/7}[f]||1; }
 function calcKwh(a) { const hrs=a.unit==='min'?a.rawTime/60:a.rawTime; let k=(a.watts*a.qty*hrs*freqMult(a.freq)*30)/1000; if (/ref|refrigerator|fridge|freezer/i.test(a.name)) k*=0.4; return k; }
+function getTotalKwh() { return state.appliances.reduce((s,a)=>s+calcKwh(a),0); }
+// NEW: compute ANECO total using current rates and kWh
+function computeAnecoTotal() {
+  const kwh = getTotalKwh();
+  if (kwh <= 0) return 0;
+  let total = 0;
+  for (const section of ANECO_SECTIONS) {
+    for (const item of section.items) {
+      const r = (state.anecoRates && state.anecoRates[item.id] !== undefined) ? state.anecoRates[item.id] : item.rate;
+      if (item.perKw) continue; // not implemented
+      if (item.fixed) total += r;
+      else total += r * kwh + (item.extraFixed||0);
+    }
+  }
+  return total;
+}
+function getEffectiveCost() {
+  // Use ANECO total if available and kWh>0, else fallback to simple rate
+  const kwh = getTotalKwh();
+  if (kwh > 0) {
+    const anecoTotal = computeAnecoTotal();
+    if (anecoTotal > 0) return anecoTotal;
+  }
+  return calcCost(kwh, state.rate);
+}
 function calcCost(kwh,rate) { return kwh*rate; }
-function getTotals() { const kwh=state.appliances.reduce((s,a)=>s+calcKwh(a),0); return { kwh, cost:calcCost(kwh,state.rate) }; }
-function calcGrade() { const {cost}=getTotals(); if (state.budget<=0) return 'A'; const p=cost/state.budget; return p<=0.8?'A':p<=1.0?'C':'F'; }
+function calcGrade() { const cost = getEffectiveCost(); if (state.budget<=0) return 'A'; const p=cost/state.budget; return p<=0.8?'A':p<=1.0?'C':'F'; }
 function animateStatValue(el,newVal) { if (!el||el.textContent===newVal) return; el.textContent=newVal; el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce'); }
 function isPremiumActive() { return state.subscription?.expiry && Date.now()<state.subscription.expiry; }
 function isPendingApproval() { return state.subscription?.status==='pending'; }
@@ -595,7 +639,7 @@ function renderEditableRates(kwh) {
   return html;
 }
 function updateAnecoTotals() {
-  const kwh = getTotals().kwh;
+  const kwh = getTotalKwh();
   let grand = 0;
   ANECO_SECTIONS.forEach((section, si) => {
     let secTot = 0;
@@ -611,12 +655,37 @@ function updateAnecoTotals() {
   });
   const tv = document.getElementById('aneco-total-val');
   if (tv) tv.textContent = fmtCurrency(grand);
+  // Also update hero card
+  const heroNum = document.getElementById('hero-num');
+  if (heroNum) heroNum.textContent = fmt(grand);
+  // Update budget row and progress based on new effective cost
+  const cost = grand;
+  const budget = state.budget;
+  const pct = budget > 0 ? Math.min((cost / budget) * 100, 150) : 0;
+  const prog = document.getElementById('hero-progress');
+  if (prog) prog.style.width = Math.min(pct, 100) + '%';
+  prog.className = 'progress-fill ' + (pct <= 80 ? 'green' : pct <= 100 ? 'amber' : 'red');
+  document.getElementById('budget-used-lbl').textContent = fmtCurrency(cost) + ' used';
+  const left = budget - cost;
+  document.getElementById('budget-left-lbl').textContent = left >= 0 ? fmtCurrency(left) + ' left' : fmtCurrency(-left) + ' over';
+  // Update grade pill
+  const grade = calcGrade();
+  const pill = document.getElementById('grade-pill');
+  pill.textContent = grade;
+  pill.className = 'grade-pill ' + grade;
+  // Update alerts if needed
+  const alerts = document.getElementById('alerts-area');
+  const pctRaw = budget > 0 ? cost / budget : 0;
+  alerts.innerHTML = '';
+  if (pctRaw > 1) alerts.innerHTML = `<div class="alert alert-danger">⚠️ Budget exceeded by ${fmtCurrency(cost - budget)}!</div>`;
+  else if (pctRaw >= 0.8) alerts.innerHTML = `<div class="alert alert-warn">⚡ Approaching budget — ${fmt((1-pctRaw)*100,0)}% remaining.</div>`;
 }
 async function saveAnecoRates() {
   const rates = {};
   document.querySelectorAll('.aneco-rate-input').forEach(inp => { const v = parseFloat(inp.value); if (!isNaN(v)) rates[inp.dataset.id] = v; });
   state.anecoRates = rates;
   await SECURE_STORAGE.setItem(KEYS.anecoRates, rates);
+  updateAnecoTotals(); // refresh hero after saving
 }
 
 /* ========== SUBSCRIPTION / PAYMENT ========== */
@@ -671,24 +740,23 @@ function renderProfile() {
       <div style="font-size:12px;color:var(--c5);margin-top:6px">${statusText}</div>
     </div>
     ${pendingBanner}
-    ${(!active && !pending) ? `
     <div class="section-title">Choose Your Plan</div>
-    ${!state.trialUsed ? `<div class="plan-card"><div class="plan-header"><div class="plan-name">🎓 1-Month Trial</div><div class="plan-save">FREE</div></div><div class="plan-price" style="margin-top:8px">₱0</div><div class="plan-per">Full access for 30 days – no payment needed</div><div class="plan-btn trial" id="start-trial">Start Free Trial</div></div>` : ''}
+    ${(!active && !pending && !state.trialUsed) ? `<div class="plan-card"><div class="plan-header"><div class="plan-name">🎓 1-Month Trial</div><div class="plan-save">FREE</div></div><div class="plan-price" style="margin-top:8px">₱0</div><div class="plan-per">Full access for 30 days – no payment needed</div><div class="plan-btn trial" id="start-trial">Start Free Trial</div></div>` : ''}
     <div class="plan-card"><div class="plan-header"><div class="plan-name">📅 1-Month Standard</div></div><div class="plan-price">₱59</div><div class="plan-per">Ideal for short-term tracking</div><div class="plan-btn" data-plan="1-Month Standard" data-days="30" data-amount="59">Subscribe ₱59</div></div>
     <div class="plan-card recommended"><div class="plan-header"><div class="plan-name">💪 3-Month Bundle</div><div class="plan-save">Save 15%</div></div><div class="plan-price">₱149</div><div class="plan-per">~₱50/mo • Most popular</div><div class="plan-btn" data-plan="3-Month Bundle" data-days="90" data-amount="149">Subscribe ₱149</div></div>
     <div class="plan-card"><div class="plan-header"><div class="plan-name">🚀 1-Year Pass</div><div class="plan-save">Save 35%</div></div><div class="plan-price">₱449</div><div class="plan-per">~₱37/mo • Best value</div><div class="plan-btn" data-plan="1-Year Pass" data-days="365" data-amount="449">Subscribe ₱449</div></div>
-    ` : ''}
     <button class="settings-btn btn-secondary" id="logout-from-profile-btn" style="margin-top:12px">🚪 Sign Out</button>
   `;
-  if (!state.trialUsed) document.getElementById('start-trial')?.addEventListener('click', activateTrial);
+  if (!state.trialUsed && !active && !pending) document.getElementById('start-trial')?.addEventListener('click', activateTrial);
   document.querySelectorAll('.plan-btn:not(.trial)').forEach(btn => btn.addEventListener('click', () => openPaymentSheet(btn.dataset.plan, parseInt(btn.dataset.days), parseInt(btn.dataset.amount))));
   document.getElementById('logout-from-profile-btn')?.addEventListener('click', () => { if (typeof window.firebaseSignOut === 'function') window.firebaseSignOut(); });
 }
 
-/* ========== BILL COMPARE (no image) ========== */
+/* ========== BILL COMPARE ========== */
 function renderBillUpload() {
   const container = document.getElementById('bill-inner');
-  const { kwh: compKwh, cost: compCost } = getTotals();
+  const { kwh: compKwh } = getTotalKwh(); // use total kWh
+  const compCost = getEffectiveCost();
   const bill = state.bill || { kwh: '', cost: '' };
   container.innerHTML = `
     <p style="font-size:12px;color:rgba(200,232,192,0.55);margin-bottom:14px;line-height:1.5">Enter the kWh and total amount from your actual ANECO bill to compare against your computed usage.</p>
@@ -722,45 +790,50 @@ function renderComparison(compKwh, compCost, bKwh, bCost) {
     </div>`;
 }
 
-/* ========== HISTORY CHART ========== */
-function recordMonthlySnapshot() {
-  const today = new Date();
-  const month = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
-  const { kwh, cost } = getTotals();
-  const idx = state.history.findIndex(h => h.month === month);
-  if (idx !== -1) state.history[idx] = { month, kwh, cost };
-  else { state.history.push({ month, kwh, cost }); if (state.history.length > 12) state.history.shift(); }
-  SECURE_STORAGE.setItem(KEYS.history, state.history);
-}
-function renderHistoryChart() {
-  const container = document.getElementById('history-chart');
-  if (!isPremiumActive()) { container.style.display = 'none'; return; }
-  container.style.display = 'block';
-  const canvas = document.getElementById('history-canvas'), ctx = canvas.getContext('2d');
-  const data = state.history.slice(-6);
-  if (data.length === 0) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.font = '13px DM Sans'; ctx.fillStyle = 'var(--c6)';
-    ctx.fillText('No history yet — add appliances to start tracking.', 10, 50);
-    return;
-  }
-  const maxKwh = Math.max(...data.map(d => d.kwh), 1), maxCost = Math.max(...data.map(d => d.cost), 1);
-  const w = canvas.parentElement.clientWidth - 36; canvas.width = w;
-  const barWidth = Math.floor(w / data.length) - 10;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  data.forEach((d, i) => {
-    const x = i * (barWidth + 10) + 5;
-    const kwhHeight = (d.kwh / maxKwh) * 100, costHeight = (d.cost / maxCost) * 100;
-    ctx.fillStyle = 'var(--c5)'; ctx.fillRect(x, 120 - kwhHeight, barWidth, kwhHeight);
-    ctx.fillStyle = '#fbbf24'; ctx.fillRect(x + barWidth/2 - 2, 120 - costHeight, 4, costHeight);
-    ctx.fillStyle = 'var(--c6)'; ctx.font = '9px DM Sans'; ctx.fillText(d.month.slice(5), x + barWidth/4, 135);
+/* ========== THREE-BOX VALIDATION (PREMIUM ONLY) ========== */
+function initThreeBoxValidation() {
+  const validateBtn = document.getElementById('validate-bill-btn');
+  if (!validateBtn) return;
+  validateBtn.addEventListener('click', () => {
+    const meterKwh = parseFloat(document.getElementById('meter-kwh').value);
+    const coopBill = parseFloat(document.getElementById('coop-bill').value);
+    const prototypeBill = parseFloat(document.getElementById('prototype-bill').value);
+    if (isNaN(meterKwh) || isNaN(coopBill) || isNaN(prototypeBill) || meterKwh < 0 || coopBill < 0 || prototypeBill < 0) {
+      showToast('Please fill all three fields with valid numbers (≥0).');
+      return;
+    }
+    const compKwh = getTotalKwh();
+    const diffKwh = meterKwh - compKwh;
+    const diffCost = coopBill - prototypeBill;
+    const percDiffCost = prototypeBill === 0 ? (coopBill === 0 ? 0 : 100) : (diffCost / prototypeBill) * 100;
+    const advice = [];
+    if (Math.abs(diffKwh) > 0.1) {
+      if (diffKwh > 0) advice.push(`Your meter reading is ${fmt(Math.abs(diffKwh),1)} kWh HIGHER than our calculation. You may have unrecorded appliances or underestimated usage.`);
+      else advice.push(`Your meter reading is ${fmt(Math.abs(diffKwh),1)} kWh LOWER than our calculation. Try checking if some appliances run less than entered.`);
+    }
+    if (Math.abs(diffCost) > 0.01) {
+      if (diffCost > 0) advice.push(`Cooperative bill is ${fmtCurrency(Math.abs(diffCost))} (${fmt(Math.abs(percDiffCost),1)}%) HIGHER than prototype. Verify rate accuracy or possible additional charges.`);
+      else advice.push(`Cooperative bill is ${fmtCurrency(Math.abs(diffCost))} (${fmt(Math.abs(percDiffCost),1)}%) LOWER than prototype. Your appliances may be overestimated.`);
+    }
+    if (advice.length === 0) advice.push('✅ Your inputs match the prototype closely. Great estimation accuracy!');
+    const resultDiv = document.getElementById('validation-result');
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `
+      <div class="section-title" style="margin-bottom:8px">📊 Validation Results</div>
+      <div><strong>Meter vs Computed kWh:</strong> <span class="${diffKwh > 0 ? 'validation-negative' : (diffKwh < 0 ? 'validation-positive' : '')}">${diffKwh >= 0 ? '+' : ''}${fmt(diffKwh,2)} kWh</span></div>
+      <div><strong>Coop vs Prototype ₱:</strong> <span class="${diffCost > 0 ? 'validation-negative' : (diffCost < 0 ? 'validation-positive' : '')}">${diffCost >= 0 ? '+' : ''}${fmtCurrency(Math.abs(diffCost))} (${percDiffCost >= 0 ? '+' : ''}${fmt(percDiffCost,1)}%)</span></div>
+      <div style="margin-top:12px;border-top:1px solid rgba(143,212,140,0.2);padding-top:10px">${advice.join('<br>')}</div>
+    `;
+    vibrate(30);
   });
 }
 
 /* ========== RENDER HOME ========== */
 function renderHome() {
-  const { kwh, cost } = getTotals();
-  const grade = calcGrade(), pct = state.budget > 0 ? Math.min((cost / state.budget) * 100, 150) : 0;
+  const kwh = getTotalKwh();
+  const cost = getEffectiveCost();
+  const grade = calcGrade();
+  const pct = state.budget > 0 ? Math.min((cost / state.budget) * 100, 150) : 0;
   document.getElementById('hero-num').textContent = fmt(cost);
   const prog = document.getElementById('hero-progress'); prog.style.width = Math.min(pct, 100) + '%'; prog.className = 'progress-fill ' + (pct <= 80 ? 'green' : pct <= 100 ? 'amber' : 'red');
   document.getElementById('budget-used-lbl').textContent = fmtCurrency(cost) + ' used';
@@ -779,7 +852,7 @@ function renderHome() {
     const top = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a))[0], vk = calcKwh(top);
     vampArea.innerHTML = `<div class="vampire-card"><div class="section-title" style="color:#fca5a5">⚡ Energy Vampire</div><div class="vampire-name">${esc(getEmoji(top.name))} ${esc(top.name)}</div><div class="vampire-sub">${fmt(vk,2)} kWh/mo · ${fmtCurrency(calcCost(vk, state.rate))}/mo</div></div>`;
   } else vampArea.innerHTML = '';
-  renderHistoryChart();
+  
   const anecoSec = document.getElementById('aneco-section');
   if (kwh > 0) {
     anecoSec.style.display = 'block';
@@ -788,16 +861,25 @@ function renderHome() {
   } else anecoSec.style.display = 'none';
   const billSec = document.getElementById('bill-upload-section');
   if (isPremiumActive() && kwh > 0) { billSec.style.display = 'block'; renderBillUpload(); } else billSec.style.display = 'none';
+  
+  // Three-box card: premium only
+  const threeBoxCard = document.getElementById('three-box-card');
+  if (threeBoxCard) {
+    threeBoxCard.style.display = isPremiumActive() ? 'block' : 'none';
+    if (isPremiumActive()) {
+      document.getElementById('prototype-bill').value = cost;
+    }
+  }
+  
   const top5 = document.getElementById('top5-list');
   if (state.appliances.length === 0) top5.innerHTML = `<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance.</div></div>`;
   else {
     const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b),state.rate) - calcCost(calcKwh(a),state.rate)).slice(0,5);
     top5.innerHTML = sorted.map(a => { const k = calcKwh(a), c = calcCost(k, state.rate); return `<div class="appliance-mini"><div class="mini-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="mini-cost">${fmtCurrency(c)}</div></div>`; }).join('');
   }
-  recordMonthlySnapshot();
 }
 
-/* ========== DEVICES (with category) ========== */
+/* ========== DEVICES ========== */
 function renderDevices() {
   const list = document.getElementById('devices-list');
   if (state.appliances.length === 0) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🔌</div><div class="empty-title">No appliances added</div><div class="empty-sub">Tap the + button to add your first appliance.</div></div>`; return; }
@@ -817,7 +899,9 @@ function renderDevices() {
 function renderGrade() {
   const gc = document.getElementById('grade-content');
   if (state.budget <= 0) { gc.innerHTML = `<div class="empty-state"><div class="empty-icon">⚙️</div><div class="empty-title">No budget set</div><div class="empty-sub">Set a monthly budget in Settings.</div></div>`; return; }
-  const { cost } = getTotals(), g = calcGrade(), pct = (cost / state.budget) * 100;
+  const cost = getEffectiveCost();
+  const g = calcGrade();
+  const pct = (cost / state.budget) * 100;
   const msgs = { A:'Excellent! Your household is energy-efficient. Keep up the great habits!', C:'Approaching your budget limit. Consider reducing usage on high-consumption appliances.', F:'Over budget! Review your high-usage appliances and cut back where possible.' };
   const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b),state.rate) - calcCost(calcKwh(a),state.rate));
   gc.innerHTML = `<div class="grade-big"><div class="grade-letter ${g}">${g}</div><div class="grade-msg">${msgs[g]}<br><br>Using <b>${fmt(pct,1)}%</b> of your <b>${fmtCurrency(state.budget)}</b> budget.</div></div>${sorted.length ? `<div class="card"><div class="section-title">Appliance Breakdown</div>${sorted.map(a => { const k=calcKwh(a),c=calcCost(k,state.rate),ap=state.budget>0?c/state.budget*100:0; return `<div class="grade-appliance-row"><div class="ga-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="ga-right"><div class="mini-cost">${fmtCurrency(c)}</div><div class="ga-pct">${fmt(ap,1)}% of budget</div></div></div>` }).join('')}</div>` : ''}`;
@@ -911,7 +995,30 @@ async function saveAppliance() {
 }
 async function deleteAppliance(id) { if (!confirm('Delete this appliance?')) return; state.appliances = state.appliances.filter(a=>a.id!==id); await save(); cachedTips = null; renderAll(); showToast('Deleted'); }
 function showCategoryField() { const group = document.getElementById('category-group'); if (group) group.style.display = isPremiumActive() ? 'block' : 'none'; }
-function setupExportButton() { const btn = document.getElementById('export-pdf-btn'); if (btn) { btn.style.display = isPremiumActive() ? 'block' : 'none'; btn.onclick = () => window.print(); } }
+function setupExportButton() {
+  const btn = document.getElementById('export-pdf-btn');
+  if (btn) {
+    btn.style.display = isPremiumActive() ? 'block' : 'none';
+    btn.onclick = () => {
+      const resultDiv = document.getElementById('validation-result');
+      if (resultDiv && resultDiv.innerHTML.trim() !== '') {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+          <html><head><title>EcoSaver Validation Report</title>
+          <style>body{font-family:sans-serif;padding:20px;} .report{border:1px solid #ccc;padding:20px;}</style>
+          </head><body><div class="report"><h2>EcoSaver Validation Report</h2>
+          <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+          ${resultDiv.innerHTML}
+          </div></body></html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      } else {
+        showToast('No validation result to print. Please run a validation first (premium only).');
+      }
+    };
+  }
+}
 
 /* ========== VIEW SWITCHING ========== */
 function switchView(view) {
@@ -952,7 +1059,6 @@ async function load() {
     const t = await SECURE_STORAGE.getItem(KEYS.trialUsed); if (t!=null) state.trialUsed = !!t;
     const bl = await SECURE_STORAGE.getItem(KEYS.bill); if (bl) state.bill = bl;
     const ar = await SECURE_STORAGE.getItem(KEYS.anecoRates); if (ar) state.anecoRates = ar;
-    const h = await SECURE_STORAGE.getItem(KEYS.history); if (h) state.history = h;
   } catch(e) { console.warn('Load error:', e); }
 }
 async function save() {
@@ -963,7 +1069,6 @@ async function save() {
   await SECURE_STORAGE.setItem(KEYS.trialUsed, state.trialUsed);
   await SECURE_STORAGE.setItem(KEYS.bill, state.bill);
   await SECURE_STORAGE.setItem(KEYS.anecoRates, state.anecoRates);
-  await SECURE_STORAGE.setItem(KEYS.history, state.history);
 }
 
 function updateClock() { const ph = new Intl.DateTimeFormat('en-PH', { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:true, timeZone:'Asia/Manila' }).format(new Date()); document.getElementById('clock').textContent = ph + ' PHT'; }
@@ -978,7 +1083,7 @@ window.initApp = async function(reload = false) {
   if (!appInitialized) {
     appInitialized = true;
     updateClock(); setInterval(updateClock, 1000);
-    initAneco(); initSettings(); initDonation();
+    initAneco(); initSettings(); initDonation(); initThreeBoxValidation();
     document.querySelectorAll('.nav-tab').forEach(tab => tab.addEventListener('click', () => switchView(tab.dataset.view)));
     document.getElementById('fab').addEventListener('click', () => { editId=null; resetSheet(); openSheet(); });
     document.getElementById('sheet-overlay').addEventListener('click', closeSheet);
