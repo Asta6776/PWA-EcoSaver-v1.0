@@ -8,293 +8,133 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="EcoSaver">
   <link rel="manifest" href="manifest.json">
-  
-  <meta http-equiv="Content-Security-Policy" 
-        content="default-src 'self'; 
-                 script-src 'self' https://apis.google.com https://www.gstatic.com https://firebaseapis.com https://*.firebaseapp.com 'unsafe-inline'; 
-                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-                 font-src 'self' https://fonts.gstatic.com;
-                 frame-src https://accounts.google.com https://*.firebaseapp.com; 
-                 connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://securetoken.googleapis.com;">
-                 
   <title>EcoSaver</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    /* ============ ALL STYLES (unchanged from previous working version) ============ */
     :root {
-      --c0: #0d2218;
-      --c1: #1a3a2a;
-      --c2: #2d5a3d;
-      --c3: #3d7a52;
-      --c4: #52a86e;
-      --c5: #8fd48c;
-      --c6: #c8e8c0;
-      --c7: #f4f0e6;
-      --amber: #f59e0b;
-      --red: #ef4444;
-      --glass: rgba(29,58,42,0.55);
-      --glass2: rgba(45,90,61,0.4);
-      --radius-sm: 14px;
-      --radius-md: 20px;
-      --radius-lg: 28px;
-      --radius-xl: 38px;
-      --nav-h: 72px;
-      --top-h: 64px;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bot: env(safe-area-inset-bottom, 0px);
-      --safe-l: env(safe-area-inset-left, 0px);
-      --safe-r: env(safe-area-inset-right, 0px);
-      --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      --c0: #0d2218; --c1: #1a3a2a; --c2: #2d5a3d; --c3: #3d7a52; --c4: #52a86e; --c5: #8fd48c; --c6: #c8e8c0; --c7: #f4f0e6;
+      --amber: #f59e0b; --red: #ef4444; --glass: rgba(29,58,42,0.55); --glass2: rgba(45,90,61,0.4);
+      --radius-sm: 14px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 38px;
+      --nav-h: 72px; --top-h: 64px;
+      --safe-top: env(safe-area-inset-top, 0px); --safe-bot: env(safe-area-inset-bottom, 0px);
+      --safe-l: env(safe-area-inset-left, 0px); --safe-r: env(safe-area-inset-right, 0px);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; overflow: hidden; background: var(--c0); }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      color: var(--c7);
-      position: relative;
-      overscroll-behavior: none;
-    }
-
-    .bg-fixed {
-      position: fixed; inset: 0; z-index: 0;
-      background: radial-gradient(ellipse at 20% 10%, #1a3a2a 0%, #0d2218 60%);
-      overflow: hidden;
-    }
-    .blob {
-      position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35;
-      animation: blobDrift 18s ease-in-out infinite alternate;
-    }
+    body { font-family: 'DM Sans', sans-serif; color: var(--c7); position: relative; overscroll-behavior: none; }
+    .bg-fixed { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse at 20% 10%, #1a3a2a 0%, #0d2218 60%); overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; animation: blobDrift 18s ease-in-out infinite alternate; }
     .blob1 { width: 380px; height: 380px; background: #2d5a3d; top: -100px; left: -80px; animation-delay: 0s; }
     .blob2 { width: 280px; height: 280px; background: #3d7a52; bottom: 100px; right: -60px; animation-delay: -6s; }
     .blob3 { width: 200px; height: 200px; background: #52a86e; top: 40%; left: 50%; animation-delay: -12s; }
-    @keyframes blobDrift {
-      0% { transform: translate(0,0) scale(1); }
-      100% { transform: translate(30px, 40px) scale(1.08); }
-    }
-    .leaf-overlay {
-      position: absolute; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q45 20 30 40 Q15 20 30 5Z' fill='none' stroke='%238fd48c' stroke-width='0.5' opacity='0.08'/%3E%3C/svg%3E");
-      background-size: 60px 60px;
-    }
-
+    @keyframes blobDrift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,40px) scale(1.08); } }
+    .leaf-overlay { position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q45 20 30 40 Q15 20 30 5Z' fill='none' stroke='%238fd48c' stroke-width='0.5' opacity='0.08'/%3E%3C/svg%3E"); background-size: 60px 60px; }
     #app { position: fixed; inset: 0; z-index: 1; display: flex; flex-direction: column; }
     .status-bar {
-      height: calc(var(--top-h) + var(--safe-top));
-      padding-top: var(--safe-top);
-      padding-left: calc(20px + var(--safe-l));
-      padding-right: calc(20px + var(--safe-r));
-      background: rgba(13,34,24,0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(143,212,140,0.12);
-      display: flex; align-items: center; justify-content: space-between;
+      height: calc(var(--top-h) + var(--safe-top)); padding-top: var(--safe-top);
+      padding-left: calc(20px + var(--safe-l)); padding-right: calc(20px + var(--safe-r));
+      background: rgba(13,34,24,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(143,212,140,0.12); display: flex; align-items: center; justify-content: space-between;
       flex-shrink: 0; z-index: 10;
     }
-    .status-bar .app-name {
-      font-family: 'Fraunces', serif;
-      font-size: 20px; font-weight: 700; color: var(--c5);
-      letter-spacing: -0.5px;
-    }
+    .status-bar .app-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--c5); letter-spacing: -0.5px; }
     .status-right { display: flex; align-items: center; gap: 10px; }
-    .clock {
-      font-size: 12px; color: var(--c6); opacity: 0.8;
-      font-variant-numeric: tabular-nums;
-    }
-    .grade-pill {
-      font-size: 11px; font-weight: 700; padding: 3px 10px;
-      border-radius: 20px; letter-spacing: 0.5px;
-      transition: background 0.3s, border 0.3s, color 0.3s;
-    }
+    .clock { font-size: 12px; color: var(--c6); opacity: 0.8; font-variant-numeric: tabular-nums; }
+    .grade-pill { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; transition: background 0.3s, border 0.3s, color 0.3s; }
     .grade-pill.A { background: rgba(143,212,140,0.25); color: var(--c5); border: 1px solid rgba(143,212,140,0.4); }
     .grade-pill.C { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.4); }
     .grade-pill.F { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); }
-
-    .views-wrap {
-      flex: 1; overflow: hidden; position: relative;
-    }
+    .views-wrap { flex: 1; overflow: hidden; position: relative; }
     .view {
-      position: absolute; inset: 0;
-      overflow-y: auto; overflow-x: hidden;
+      position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden;
       padding: 16px calc(16px + var(--safe-r)) calc(var(--nav-h) + var(--safe-bot) + 20px) calc(16px + var(--safe-l));
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      transform: translateX(30px);
-      -webkit-overflow-scrolling: touch;
+      opacity: 0; pointer-events: none; transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      transform: translateX(30px); -webkit-overflow-scrolling: touch;
     }
-    .view.active {
-      opacity: 1; pointer-events: auto;
-      transform: translateX(0);
-    }
+    .view.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
     .view.slide-out-left { opacity: 0; transform: translateX(-30px); }
     .view.slide-in-left { opacity: 0; transform: translateX(-30px); }
     .view.slide-out-right { opacity: 0; transform: translateX(30px); }
-
     .bottom-nav {
-      height: calc(var(--nav-h) + var(--safe-bot));
-      padding-bottom: var(--safe-bot);
-      padding-left: var(--safe-l);
-      padding-right: var(--safe-r);
-      background: rgba(13,34,24,0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(143,212,140,0.12);
-      display: flex; align-items: flex-start; z-index: 10;
-      flex-shrink: 0;
+      height: calc(var(--nav-h) + var(--safe-bot)); padding-bottom: var(--safe-bot);
+      padding-left: var(--safe-l); padding-right: var(--safe-r);
+      background: rgba(13,34,24,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(143,212,140,0.12); display: flex; align-items: flex-start; z-index: 10; flex-shrink: 0;
     }
-    .nav-tab {
-      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding-top: 12px; gap: 2px; cursor: pointer;
-      color: rgba(200,232,192,0.45); transition: color 0.2s, transform 0.15s;
-      -webkit-tap-highlight-color: transparent;
-      position: relative;
-      user-select: none;
-    }
+    .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 12px; gap: 2px; cursor: pointer; color: rgba(200,232,192,0.45); transition: color 0.2s, transform 0.15s; -webkit-tap-highlight-color: transparent; position: relative; user-select: none; }
     .nav-tab:active { transform: scale(0.93); }
     .nav-tab.active { color: var(--c5); }
-    .nav-tab .nav-icon {
-      width: 24px; height: 24px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .nav-tab .nav-icon svg {
-      width: 100%; height: 100%;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      fill: none;
-      transition: stroke 0.2s, fill 0.2s;
-    }
-    .nav-tab.active .nav-icon svg {
-      stroke: var(--c5);
-    }
+    .nav-tab .nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .nav-tab .nav-icon svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 1.8; fill: none; transition: stroke 0.2s, fill 0.2s; }
+    .nav-tab.active .nav-icon svg { stroke: var(--c5); }
     .nav-tab .nav-label { font-size: 10px; font-weight: 500; letter-spacing: 0.3px; }
-    .nav-dot {
-      width: 4px; height: 4px; border-radius: 50%;
-      background: var(--c5); position: absolute;
-      bottom: -4px; opacity: 0; transition: opacity 0.2s;
-    }
+    .nav-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--c5); position: absolute; bottom: -4px; opacity: 0; transition: opacity 0.2s; }
     .nav-tab.active .nav-dot { opacity: 1; }
-
     .fab {
-      position: fixed;
-      right: calc(20px + var(--safe-r));
-      bottom: calc(var(--nav-h) + var(--safe-bot) + 16px);
-      width: 56px; height: 56px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--c4), var(--c3));
-      border: none; color: white; font-size: 28px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 20;
-      box-shadow: 0 4px 20px rgba(82,168,110,0.4);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
-      user-select: none;
+      position: fixed; right: calc(20px + var(--safe-r)); bottom: calc(var(--nav-h) + var(--safe-bot) + 16px);
+      width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--c4), var(--c3));
+      border: none; color: white; font-size: 28px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 20; box-shadow: 0 4px 20px rgba(82,168,110,0.4);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s; user-select: none;
     }
     .fab:active { transform: scale(0.88); box-shadow: 0 2px 10px rgba(82,168,110,0.3); }
-    .fab.sheet-open { transform: rotate(45deg); background: linear-gradient(135deg, #ef4444, #f87171); }
-
-    .card {
-      background: var(--glass);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(143,212,140,0.15);
-      border-radius: var(--radius-md);
-      padding: 18px;
-      margin-bottom: 12px;
-      transition: transform 0.15s, box-shadow 0.2s;
-      will-change: transform;
-    }
+    .fab.sheet-open { transform: rotate(45deg); background: linear-gradient(135deg,#ef4444,#f87171); }
+    .card { background: var(--glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(143,212,140,0.15); border-radius: var(--radius-md); padding: 18px; margin-bottom: 12px; transition: transform 0.15s, box-shadow 0.2s; will-change: transform; }
     .card:active { transform: scale(0.98); }
     .card-lg { border-radius: var(--radius-lg); padding: 22px; }
-    .section-title {
-      font-family: 'Fraunces', serif;
-      font-size: 14px; font-weight: 600;
-      color: var(--c5); letter-spacing: 0.5px;
-      text-transform: uppercase; margin-bottom: 12px;
-      opacity: 0.85;
-    }
-
+    .section-title { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; color: var(--c5); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; opacity: 0.85; }
     .alert { border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 10px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; animation: fadeInUp 0.3s ease; }
     .alert-warn { background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.35); color: #fde68a; }
     .alert-danger { background: rgba(239,68,68,0.18); border: 1px solid rgba(239,68,68,0.35); color: #fca5a5; }
-
-    .hero-card {
-      background: linear-gradient(135deg, rgba(45,90,61,0.7), rgba(29,58,42,0.8));
-      border: 1px solid rgba(143,212,140,0.2);
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      margin-bottom: 12px;
-      transition: transform 0.15s;
-    }
+    .hero-card { background: linear-gradient(135deg, rgba(45,90,61,0.7), rgba(29,58,42,0.8)); border: 1px solid rgba(143,212,140,0.2); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 12px; transition: transform 0.15s; }
     .hero-card:active { transform: scale(0.985); }
     .hero-label { font-size: 12px; color: var(--c6); opacity: 0.7; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
-    .hero-amount {
-      font-family: 'Fraunces', serif;
-      font-size: 48px; font-weight: 900; color: var(--c6);
-      line-height: 1; letter-spacing: -2px; margin-bottom: 16px;
-    }
+    .hero-amount { font-family: 'Fraunces', serif; font-size: 48px; font-weight: 900; color: var(--c6); line-height: 1; letter-spacing: -2px; margin-bottom: 16px; }
     .hero-amount span { font-size: 24px; opacity: 0.7; vertical-align: super; }
     .progress-bar { height: 8px; border-radius: 4px; background: rgba(143,212,140,0.15); overflow: hidden; margin-bottom: 8px; }
-    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.7s cubic-bezier(0.4,0,0.2,1), background 0.5s; }
     .progress-fill.green { background: linear-gradient(90deg, var(--c4), var(--c5)); }
     .progress-fill.amber { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
     .progress-fill.red { background: linear-gradient(90deg, #ef4444, #f87171); }
     .budget-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--c6); opacity: 0.65; }
-
     .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-    .stat-card {
-      background: var(--glass); border: 1px solid rgba(143,212,140,0.12);
-      border-radius: var(--radius-md); padding: 14px 10px; text-align: center;
-      transition: transform 0.15s;
-    }
+    .stat-card { background: var(--glass); border: 1px solid rgba(143,212,140,0.12); border-radius: var(--radius-md); padding: 14px 10px; text-align: center; transition: transform 0.15s; }
     .stat-card:active { transform: scale(0.96); }
     .stat-val { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--c5); transition: all 0.2s; }
     .stat-val.bounce { animation: numberBounce 0.4s ease; }
-    @keyframes numberBounce { 0% { transform: scale(1); } 30% { transform: scale(1.25); color: var(--c4); } 100% { transform: scale(1); } }
+    @keyframes numberBounce { 0%{transform:scale(1)} 30%{transform:scale(1.25);color:var(--c4)} 100%{transform:scale(1)} }
     .stat-label { font-size: 10px; color: var(--c6); opacity: 0.6; margin-top: 2px; }
-
     .vampire-card { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--radius-md); padding: 16px; margin-bottom: 12px; transition: transform 0.15s; }
     .vampire-card:active { transform: scale(0.98); }
     .vampire-name { font-weight: 600; font-size: 15px; color: #fca5a5; }
     .vampire-sub { font-size: 12px; color: rgba(252,165,165,0.7); margin-top: 2px; }
-
     .aneco-section { margin-bottom: 12px; }
-    .aneco-toggle-btn {
-      width: 100%; background: var(--glass); border: 1px solid rgba(143,212,140,0.15);
-      border-radius: var(--radius-md); padding: 14px 18px;
-      color: var(--c6); font-size: 13px; font-weight: 500;
-      display: flex; align-items: center; justify-content: space-between; cursor: pointer;
-      font-family: 'DM Sans', sans-serif; transition: transform 0.15s;
-      user-select: none;
-    }
+    .aneco-toggle-btn { width: 100%; background: var(--glass); border: 1px solid rgba(143,212,140,0.15); border-radius: var(--radius-md); padding: 14px 18px; color: var(--c6); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: transform 0.15s; user-select: none; }
     .aneco-toggle-btn:active { transform: scale(0.97); }
     .aneco-toggle-btn .chevron { transition: transform 0.3s; font-size: 16px; }
     .aneco-toggle-btn.open .chevron { transform: rotate(180deg); }
-    .aneco-body {
-      max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-      background: var(--glass); border: 1px solid rgba(143,212,140,0.1);
-      border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md);
-      margin-top: -4px;
-    }
-    .aneco-body.open { max-height: 3000px; }
+    .aneco-body { max-height: 0; overflow: hidden; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1); background: var(--glass); border: 1px solid rgba(143,212,140,0.1); border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md); margin-top: -4px; }
+    .aneco-body.open { max-height: 3500px; }
     .aneco-inner { padding: 16px; }
     .aneco-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(143,212,140,0.07); font-size: 13px; }
     .aneco-row:last-child { border-bottom: none; }
     .aneco-row.total { font-weight: 700; color: var(--c5); font-size: 14px; border-top: 1px solid rgba(143,212,140,0.25); margin-top: 4px; padding-top: 10px; }
     .aneco-row.subtotal { font-weight: 600; color: var(--c6); }
     .aneco-row .r-val { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 600; }
-
     .appliance-mini { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(143,212,140,0.08); transition: background 0.2s; }
     .appliance-mini:last-child { border-bottom: none; }
-    .appliance-mini:active { background: rgba(143,212,140,0.05); }
     .mini-left { display: flex; align-items: center; gap: 10px; }
     .mini-emoji { font-size: 22px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(143,212,140,0.1); border-radius: 10px; }
     .mini-name { font-size: 13px; font-weight: 500; color: var(--c7); }
     .mini-kwh { font-size: 11px; color: var(--c6); opacity: 0.6; }
     .mini-cost { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 700; color: var(--c5); }
-
     .empty-state { text-align: center; padding: 48px 24px; }
     .empty-icon { font-size: 64px; margin-bottom: 16px; animation: float 2.5s ease-in-out infinite; }
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     .empty-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; color: var(--c6); margin-bottom: 8px; }
     .empty-sub { font-size: 14px; color: var(--c6); opacity: 0.55; line-height: 1.5; }
-
     .device-card { margin-bottom: 10px; transition: transform 0.15s; }
     .device-card:active { transform: scale(0.98); }
     .device-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
@@ -306,117 +146,56 @@
     .device-stat .val { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 700; color: var(--c5); }
     .device-stat .lbl { font-size: 10px; color: var(--c6); opacity: 0.55; }
     .device-actions { display: flex; gap: 8px; }
-    .btn-sm {
-      flex: 1; padding: 8px; border-radius: 10px; border: none;
-      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: transform 0.1s, opacity 0.2s;
-      user-select: none;
-    }
+    .btn-sm { flex: 1; padding: 8px; border-radius: 10px; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: transform 0.1s, opacity 0.2s; user-select: none; }
     .btn-sm:active { transform: scale(0.94); }
     .btn-edit { background: rgba(82,168,110,0.2); color: var(--c5); border: 1px solid rgba(82,168,110,0.3); }
     .btn-delete { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-
     .tip-card { margin-bottom: 10px; position: relative; overflow: hidden; transition: transform 0.15s; animation: fadeInUp 0.4s ease backwards; }
-    .tip-card:nth-child(1) { animation-delay: 0.05s; }
-    .tip-card:nth-child(2) { animation-delay: 0.1s; }
-    .tip-card:nth-child(3) { animation-delay: 0.15s; }
-    .tip-card:nth-child(4) { animation-delay: 0.2s; }
-    .tip-card:nth-child(5) { animation-delay: 0.25s; }
-    .tip-card:nth-child(6) { animation-delay: 0.3s; }
+    .tip-card:nth-child(1){animation-delay:0.05s} .tip-card:nth-child(2){animation-delay:0.1s} .tip-card:nth-child(3){animation-delay:0.15s} .tip-card:nth-child(4){animation-delay:0.2s} .tip-card:nth-child(5){animation-delay:0.25s} .tip-card:nth-child(6){animation-delay:0.3s}
     .tip-card:active { transform: scale(0.97); }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
     .tip-emoji { font-size: 28px; margin-bottom: 8px; }
     .tip-title { font-size: 14px; font-weight: 600; color: var(--c6); margin-bottom: 6px; }
     .tip-body { font-size: 13px; color: var(--c6); opacity: 0.75; line-height: 1.55; margin-bottom: 8px; }
     .tip-saving { display: inline-block; background: rgba(143,212,140,0.15); border: 1px solid rgba(143,212,140,0.25); border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 600; color: var(--c5); }
-    .tips-refresh-btn {
-      width: 100%; background: rgba(82,168,110,0.15); border: 1px solid rgba(82,168,110,0.3);
-      border-radius: var(--radius-md); padding: 12px; color: var(--c5); font-size: 13px; font-weight: 500;
-      cursor: pointer; font-family: 'DM Sans', sans-serif; margin-bottom: 12px;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: transform 0.1s; user-select: none;
-    }
+    .tips-refresh-btn { width: 100%; background: rgba(82,168,110,0.15); border: 1px solid rgba(82,168,110,0.3); border-radius: var(--radius-md); padding: 12px; color: var(--c5); font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.1s; user-select: none; }
     .tips-refresh-btn:active { transform: scale(0.95); }
     .loading-dots { display: flex; gap: 6px; justify-content: center; padding: 40px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c4); animation: dotPulse 1.2s ease-in-out infinite; }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
+    .dot:nth-child(2){animation-delay:0.2s} .dot:nth-child(3){animation-delay:0.4s}
     @keyframes dotPulse { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
-
     .grade-big { text-align: center; padding: 32px 24px 20px; }
-    .grade-letter {
-      font-family: 'Fraunces', serif;
-      font-size: 120px; font-weight: 900; line-height: 1;
-      transition: color 0.4s, text-shadow 0.4s;
-    }
+    .grade-letter { font-family: 'Fraunces', serif; font-size: 120px; font-weight: 900; line-height: 1; transition: color 0.4s, text-shadow 0.4s; }
     .grade-letter.A { color: var(--c5); text-shadow: 0 0 40px rgba(143,212,140,0.4); }
     .grade-letter.C { color: #fbbf24; text-shadow: 0 0 40px rgba(251,191,36,0.3); }
     .grade-letter.F { color: #f87171; text-shadow: 0 0 40px rgba(248,113,113,0.3); }
     .grade-msg { font-size: 15px; color: var(--c6); opacity: 0.75; line-height: 1.5; }
     .grade-appliance-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(143,212,140,0.08); }
     .grade-appliance-row:last-child { border-bottom: none; }
-    .ga-left { display: flex; align-items: center; gap: 10px; }
-    .ga-right { text-align: right; }
+    .ga-left { display: flex; align-items: center; gap: 10px; } .ga-right { text-align: right; }
     .ga-pct { font-family: 'Fraunces', serif; font-size: 13px; color: var(--c5); font-weight: 700; }
-
     .settings-group { margin-bottom: 16px; }
     .settings-label { font-size: 12px; color: var(--c5); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
-    .settings-input {
-      width: 100%; background: rgba(13,34,24,0.6); border: 1px solid rgba(143,212,140,0.2);
-      border-radius: var(--radius-sm); padding: 12px 16px; color: var(--c7);
-      font-family: 'DM Sans', sans-serif; font-size: 15px;
-      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-    }
+    .settings-input { width: 100%; background: rgba(13,34,24,0.6); border: 1px solid rgba(143,212,140,0.2); border-radius: var(--radius-sm); padding: 12px 16px; color: var(--c7); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
     .settings-input:focus { border-color: rgba(143,212,140,0.5); box-shadow: 0 0 0 3px rgba(143,212,140,0.15); }
-    .settings-btn {
-      width: 100%; padding: 13px; border-radius: var(--radius-sm); border: none;
-      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-      cursor: pointer; margin-bottom: 8px; transition: transform 0.1s, opacity 0.2s;
-      user-select: none;
-    }
+    .settings-btn { width: 100%; padding: 13px; border-radius: var(--radius-sm); border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 8px; transition: transform 0.1s, opacity 0.2s; user-select: none; }
     .settings-btn:active { transform: scale(0.96); }
     .btn-primary { background: linear-gradient(135deg, var(--c4), var(--c3)); color: white; }
     .btn-secondary { background: rgba(143,212,140,0.12); color: var(--c5); border: 1px solid rgba(143,212,140,0.25); }
     .btn-danger { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
     .about-text { font-size: 12px; color: var(--c6); opacity: 0.5; line-height: 1.7; }
-
-    .sheet-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 30;
-      opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
-      backdrop-filter: blur(4px);
-    }
+    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; backdrop-filter: blur(4px); }
     .sheet-overlay.open { opacity: 1; pointer-events: all; }
-    .sheet {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 31;
-      background: linear-gradient(180deg, #1a3a2a 0%, #0d2218 100%);
-      border-top: 1px solid rgba(143,212,140,0.2);
-      border-radius: 24px 24px 0 0;
-      padding: 0 20px calc(24px + var(--safe-bot));
-      max-height: 92vh; overflow-y: auto;
-      transform: translateY(100%);
-      transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
-    }
+    .sheet { position: fixed; bottom: 0; left: 0; right: 0; z-index: 31; background: linear-gradient(180deg, #1a3a2a 0%, #0d2218 100%); border-top: 1px solid rgba(143,212,140,0.2); border-radius: 24px 24px 0 0; padding: 0 20px calc(24px + var(--safe-bot)); max-height: 92vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.42s cubic-bezier(0.32,0.72,0,1); }
     .sheet.open { transform: translateY(0); }
     .sheet-handle { width: 40px; height: 4px; background: rgba(143,212,140,0.25); border-radius: 2px; margin: 12px auto 20px; }
     .sheet-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--c6); margin-bottom: 20px; }
     .form-group { margin-bottom: 16px; }
     .form-label { font-size: 12px; color: var(--c5); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; display: block; }
-    .form-input {
-      width: 100%; background: rgba(13,34,24,0.6); border: 1px solid rgba(143,212,140,0.2);
-      border-radius: var(--radius-sm); padding: 13px 16px; color: var(--c7);
-      font-family: 'DM Sans', sans-serif; font-size: 15px;
-      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-    }
+    .form-input { width: 100%; background: rgba(13,34,24,0.6); border: 1px solid rgba(143,212,140,0.2); border-radius: var(--radius-sm); padding: 13px 16px; color: var(--c7); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
     .form-input:focus { border-color: rgba(143,212,140,0.5); box-shadow: 0 0 0 3px rgba(143,212,140,0.15); }
     .form-input.error { border-color: rgba(239,68,68,0.5); }
-    .form-select {
-      width: 100%; background: rgba(13,34,24,0.6); border: 1px solid rgba(143,212,140,0.2);
-      border-radius: var(--radius-sm); padding: 13px 16px; color: var(--c7);
-      font-family: 'DM Sans', sans-serif; font-size: 15px;
-      outline: none; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fd48c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 16px center;
-    }
-    .form-error { font-size: 12px; color: #f87171; margin-top: 4px; }
+    .form-select { width: 100%; background: rgba(13,34,24,0.6); border: 1px solid rgba(143,212,140,0.2); border-radius: var(--radius-sm); padding: 13px 16px; color: var(--c7); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238fd48c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
     .seg-switch { display: flex; background: rgba(13,34,24,0.6); border: 1px solid rgba(143,212,140,0.2); border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
     .seg-btn { flex: 1; padding: 10px; border: none; background: transparent; color: rgba(200,232,192,0.5); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.2s, color 0.2s, transform 0.1s; }
     .seg-btn:active { transform: scale(0.95); }
@@ -426,225 +205,103 @@
     .sheet-btn:active { transform: scale(0.95); }
     .sheet-btn-save { background: linear-gradient(135deg, var(--c4), var(--c3)); color: white; }
     .sheet-btn-cancel { background: rgba(143,212,140,0.1); color: var(--c6); border: 1px solid rgba(143,212,140,0.2); }
-
-    .toast {
-      position: fixed; bottom: calc(var(--nav-h) + var(--safe-bot) + 70px);
-      left: 50%; transform: translateX(-50%) translateY(20px);
-      background: rgba(29,58,42,0.95); color: var(--c6);
-      padding: 10px 20px; border-radius: 24px;
-      font-size: 13px; font-weight: 500;
-      border: 1px solid rgba(143,212,140,0.25);
-      backdrop-filter: blur(10px); z-index: 50;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    .toast { position: fixed; bottom: calc(var(--nav-h) + var(--safe-bot) + 70px); left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(29,58,42,0.95); color: var(--c6); padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 500; border: 1px solid rgba(143,212,140,0.25); backdrop-filter: blur(10px); z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    .donate-card {
-      background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(251,191,36,0.08));
-      border: 1px solid rgba(245,158,11,0.35);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      margin-bottom: 12px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .donate-card::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(251,191,36,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .donate-card-title {
-      font-family: 'Fraunces', serif;
-      font-size: 17px; font-weight: 700;
-      color: #fde68a; margin-bottom: 6px;
-    }
-    .donate-card-sub {
-      font-size: 12px; color: rgba(253,230,138,0.7);
-      line-height: 1.5; margin-bottom: 16px;
-    }
-    .donate-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
-      color: #0d2218; font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 700;
-      padding: 12px 24px; border-radius: 50px; border: none;
-      cursor: pointer; transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
-      box-shadow: 0 4px 16px rgba(245,158,11,0.35);
-      user-select: none; letter-spacing: 0.2px;
-    }
+    .donate-card { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(251,191,36,0.08)); border: 1px solid rgba(245,158,11,0.35); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 12px; text-align: center; position: relative; overflow: hidden; }
+    .donate-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(251,191,36,0.08) 0%, transparent 70%); pointer-events: none; }
+    .donate-card-title { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; color: #fde68a; margin-bottom: 6px; }
+    .donate-card-sub { font-size: 12px; color: rgba(253,230,138,0.7); line-height: 1.5; margin-bottom: 16px; }
+    .donate-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #0d2218; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; padding: 12px 24px; border-radius: 50px; border: none; cursor: pointer; transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s; box-shadow: 0 4px 16px rgba(245,158,11,0.35); user-select: none; letter-spacing: 0.2px; }
     .donate-btn:active { transform: scale(0.93); box-shadow: 0 2px 8px rgba(245,158,11,0.25); }
-
-    .donate-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 40;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-      backdrop-filter: blur(6px);
-    }
+    .donate-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 40; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(6px); }
     .donate-overlay.open { opacity: 1; pointer-events: all; }
-    .donate-modal {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 41;
-      background: linear-gradient(180deg, #1e3d2c 0%, #0d2218 100%);
-      border-top: 1px solid rgba(245,158,11,0.3);
-      border-radius: 24px 24px 0 0;
-      padding: 0 24px calc(32px + var(--safe-bot));
-      max-height: 85vh; overflow-y: auto;
-      transform: translateY(100%);
-      transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
-    }
+    .donate-modal { position: fixed; bottom: 0; left: 0; right: 0; z-index: 41; background: linear-gradient(180deg, #1e3d2c 0%, #0d2218 100%); border-top: 1px solid rgba(245,158,11,0.3); border-radius: 24px 24px 0 0; padding: 0 24px calc(32px + var(--safe-bot)); max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.42s cubic-bezier(0.32,0.72,0,1); }
     .donate-modal.open { transform: translateY(0); }
     .donate-modal-handle { width: 40px; height: 4px; background: rgba(245,158,11,0.3); border-radius: 2px; margin: 12px auto 20px; }
     .donate-modal-icon { font-size: 52px; text-align: center; margin-bottom: 8px; animation: float 2.5s ease-in-out infinite; }
-    .donate-modal-title {
-      font-family: 'Fraunces', serif;
-      font-size: 26px; font-weight: 900;
-      color: #fde68a; text-align: center;
-      margin-bottom: 6px;
-    }
-    .donate-modal-msg {
-      font-size: 14px; color: rgba(253,230,138,0.75);
-      text-align: center; line-height: 1.6;
-      margin-bottom: 24px;
-    }
-    .gcash-box {
-      background: rgba(13,34,24,0.7);
-      border: 1px solid rgba(245,158,11,0.3);
-      border-radius: var(--radius-md);
-      padding: 20px; text-align: center;
-      margin-bottom: 16px;
-    }
-    .gcash-logo {
-      font-size: 13px; font-weight: 700; color: #fbbf24;
-      letter-spacing: 1px; text-transform: uppercase;
-      margin-bottom: 6px; opacity: 0.8;
-    }
+    .donate-modal-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 900; color: #fde68a; text-align: center; margin-bottom: 6px; }
+    .donate-modal-msg { font-size: 14px; color: rgba(253,230,138,0.75); text-align: center; line-height: 1.6; margin-bottom: 24px; }
+    .gcash-box { background: rgba(13,34,24,0.7); border: 1px solid rgba(245,158,11,0.3); border-radius: var(--radius-md); padding: 20px; text-align: center; margin-bottom: 16px; }
+    .gcash-logo { font-size: 13px; font-weight: 700; color: #fbbf24; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; opacity: 0.8; }
     .gcash-label { font-size: 11px; color: rgba(200,232,192,0.5); margin-bottom: 6px; }
-    .gcash-number {
-      font-family: 'Fraunces', serif;
-      font-size: 28px; font-weight: 900;
-      color: var(--c6); letter-spacing: 2px;
-      margin-bottom: 4px;
-    }
+    .gcash-number { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 900; color: var(--c6); letter-spacing: 2px; margin-bottom: 4px; }
     .gcash-name { font-size: 13px; color: rgba(200,232,192,0.65); margin-bottom: 14px; }
-    .gcash-copy-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.35);
-      border-radius: 50px; padding: 8px 18px;
-      color: #fbbf24; font-size: 13px; font-weight: 600;
-      cursor: pointer; font-family: 'DM Sans', sans-serif;
-      transition: transform 0.15s, background 0.2s;
-      user-select: none;
-    }
+    .gcash-copy-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.35); border-radius: 50px; padding: 8px 18px; color: #fbbf24; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: transform 0.15s, background 0.2s; user-select: none; }
     .gcash-copy-btn:active { transform: scale(0.93); background: rgba(245,158,11,0.25); }
-    .donate-amounts {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-      margin-bottom: 16px;
-    }
-    .donate-amount-btn {
-      background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);
-      border-radius: var(--radius-sm); padding: 12px 8px; text-align: center;
-      cursor: pointer; transition: transform 0.15s, background 0.2s;
-      user-select: none;
-    }
+    .donate-amounts { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+    .donate-amount-btn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); border-radius: var(--radius-sm); padding: 12px 8px; text-align: center; cursor: pointer; transition: transform 0.15s, background 0.2s; user-select: none; }
     .donate-amount-btn:active { transform: scale(0.93); background: rgba(245,158,11,0.22); }
-    .donate-amount-val {
-      font-family: 'Fraunces', serif;
-      font-size: 18px; font-weight: 800; color: #fde68a;
-    }
+    .donate-amount-val { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 800; color: #fde68a; }
     .donate-amount-label { font-size: 10px; color: rgba(253,230,138,0.5); margin-top: 2px; }
-    .donate-close-btn {
-      width: 100%; padding: 14px; border-radius: var(--radius-md); border: none;
-      background: rgba(143,212,140,0.1); color: var(--c6);
-      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: transform 0.1s;
-      border: 1px solid rgba(143,212,140,0.2);
-      user-select: none;
-    }
+    .donate-close-btn { width: 100%; padding: 14px; border-radius: var(--radius-md); border: 1px solid rgba(143,212,140,0.2); background: rgba(143,212,140,0.1); color: var(--c6); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: transform 0.1s; user-select: none; }
     .donate-close-btn:active { transform: scale(0.96); }
-    .donate-thank-you {
-      font-size: 11px; color: rgba(200,232,192,0.4);
-      text-align: center; margin-top: 12px; line-height: 1.6;
-    }
+    .donate-thank-you { font-size: 11px; color: rgba(200,232,192,0.4); text-align: center; margin-top: 12px; line-height: 1.6; }
 
+    /* ── LOGIN ── */
     #login-container {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; inset: 0;
       background: radial-gradient(ellipse at 20% 10%, #1a3a2a 0%, #0d2218 100%);
-      z-index: 200;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; text-align: center;
-      transition: opacity 0.4s ease;
+      z-index: 200; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; text-align: center; transition: opacity 0.4s ease;
     }
     #login-container.hidden { display: none; }
-    .login-card {
-      background: rgba(29,58,42,0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(143,212,140,0.25);
-      border-radius: 28px; padding: 32px 28px;
-      width: 90%; max-width: 400px;
-    }
-    .login-card .lock-icon {
-      background: rgba(143,212,140,0.15);
-      width: 70px; height: 70px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px auto;
-    }
+    .login-card { background: rgba(29,58,42,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(143,212,140,0.25); border-radius: 28px; padding: 32px 28px; width: 90%; max-width: 400px; }
+    .login-card .lock-icon { background: rgba(143,212,140,0.15); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; }
     .login-card .lock-icon svg { width: 36px; height: 36px; color: var(--c5); }
     .login-card h2 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: var(--c6); margin-bottom: 8px; }
     .login-card p { font-size: 14px; color: rgba(200,232,192,0.7); line-height: 1.5; margin-bottom: 20px; }
     #google-login-btn {
-      background: #fff; border: none; border-radius: 40px;
-      padding: 12px 20px; font-size: 16px; font-weight: 500;
-      display: inline-flex; align-items: center; gap: 12px;
-      cursor: pointer; margin-bottom: 20px; transition: transform 0.1s, opacity 0.2s;
-      width: 100%; justify-content: center;
+      background: #fff; border: none; border-radius: 40px; padding: 12px 20px; font-size: 16px; font-weight: 500;
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      cursor: pointer; margin-bottom: 20px; width: 100%;
+      transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      color: #3c4043; font-family: 'DM Sans', sans-serif;
     }
     #google-login-btn:active { transform: scale(0.96); }
     #google-login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    #google-login-btn .g-logo { width: 20px; height: 20px; flex-shrink: 0; }
+    #google-login-btn .g-text { white-space: nowrap; }
     .login-footer { border-top: 1px solid rgba(143,212,140,0.2); padding-top: 20px; }
     .login-footer p { font-size: 11px; color: rgba(200,232,192,0.5); margin: 4px 0; }
 
-    .premium-badge {
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
-      color: #0d2218;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 12px;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-
-    .aneco-section-header {
-      font-family: 'Fraunces', serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--c4);
-      margin-top: 12px;
-      margin-bottom: 6px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(143,212,140,0.15);
+    .premium-badge { background: linear-gradient(135deg,#f59e0b,#fbbf24); color: #0d2218; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 12px; margin-left: 8px; vertical-align: middle; }
+    .plan-card { background: var(--glass); border: 1px solid rgba(143,212,140,0.25); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; transition: transform 0.1s, border-color 0.2s; }
+    .plan-card.recommended { border-color: var(--amber); background: linear-gradient(135deg, rgba(245,158,11,0.1), var(--glass)); }
+    .plan-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .plan-name { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: var(--c6); }
+    .plan-save { background: rgba(245,158,11,0.15); color: #fbbf24; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 12px; }
+    .plan-price { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 900; color: var(--c5); line-height: 1; }
+    .plan-per { font-size: 12px; color: var(--c6); opacity: 0.6; }
+    .plan-btn { background: rgba(82,168,110,0.2); color: var(--c5); border: 1px solid rgba(82,168,110,0.4); border-radius: 50px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; transition: background 0.2s; user-select: none; margin-top: 4px; }
+    .plan-btn:active { background: rgba(82,168,110,0.4); }
+    .plan-btn.trial { background: transparent; border: 1px solid var(--amber); color: #fbbf24; }
+    .plan-btn.trial:active { background: rgba(245,158,11,0.2); }
+    .payment-option { display: flex; align-items: center; gap: 12px; padding: 14px; background: rgba(13,34,24,0.5); border: 1px solid rgba(143,212,140,0.2); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; transition: background 0.2s; }
+    .payment-option:active { background: rgba(82,168,110,0.1); }
+    .payment-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(143,212,140,0.15); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .payment-info { flex: 1; }
+    .payment-name { font-size: 14px; font-weight: 600; color: var(--c6); }
+    .payment-desc { font-size: 11px; color: var(--c6); opacity: 0.6; }
+    .pending-banner { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 12px; font-size: 13px; color: #fde68a; line-height: 1.55; }
+    .pending-banner strong { display: block; font-size: 14px; margin-bottom: 4px; }
+    .aneco-section-header { font-family: 'Fraunces', serif; font-size: 13px; font-weight: 600; color: var(--c4); margin-top: 12px; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(143,212,140,0.15); }
+    .history-chart { margin-bottom: 16px; }
+    @media print {
+      body * { visibility: hidden; }
+      #app, #app * { visibility: visible; }
+      #app { position: absolute; top: 0; left: 0; }
+      .fab, .bottom-nav, .sheet-overlay, .sheet, #login-container { display: none !important; }
     }
   </style>
 </head>
 <body>
-<div class="bg-fixed">
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-  <div class="leaf-overlay"></div>
-</div>
+<div class="bg-fixed"><div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div><div class="leaf-overlay"></div></div>
 
-<div id="app" style="display: none;">
+<div id="app" style="display:none;">
   <div class="status-bar">
     <div class="app-name">🌿 EcoSaver</div>
-    <div class="status-right">
-      <div class="clock" id="clock">--:-- -- PHT</div>
-      <div class="grade-pill A" id="grade-pill">A</div>
-    </div>
+    <div class="status-right"><div class="clock" id="clock">--:-- -- PHT</div><div class="grade-pill A" id="grade-pill">A</div></div>
   </div>
-
   <div class="views-wrap">
     <div class="view active" id="view-home">
       <div id="alerts-area"></div>
@@ -659,6 +316,9 @@
         <div class="stat-card"><div class="stat-label">kWh/day</div><div class="stat-val" id="stat-kwh-day">0.0</div></div>
         <div class="stat-card"><div class="stat-label">Appliances</div><div class="stat-val" id="stat-count">0</div></div>
       </div>
+      <div class="history-chart" id="history-chart" style="display:none">
+        <div class="card"><div class="section-title">📈 6‑Month Trend</div><canvas id="history-canvas" height="200"></canvas></div>
+      </div>
       <div id="vampire-area"></div>
       <div class="aneco-section" id="aneco-section" style="display:none">
         <button class="aneco-toggle-btn" id="aneco-toggle"><span>🧾 ANECO Unbundled Rate Breakdown</span><span class="chevron">▼</span></button>
@@ -668,31 +328,12 @@
         <button class="aneco-toggle-btn" id="bill-toggle"><span>📄 Compare with Actual Bill</span><span class="chevron">▼</span></button>
         <div class="aneco-body" id="bill-body"><div class="aneco-inner" id="bill-inner"></div></div>
       </div>
-      <div class="card">
-        <div class="section-title">Top Consumers</div>
-        <div id="top5-list"><div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance and start tracking your energy use.</div></div></div>
-      </div>
+      <div class="card"><div class="section-title">Top Consumers</div><div id="top5-list"><div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance.</div></div></div></div>
     </div>
-
-    <div class="view" id="view-devices">
-      <div class="section-title" style="margin-bottom:16px;font-size:16px">My Appliances</div>
-      <div id="devices-list"></div>
-    </div>
-
-    <div class="view" id="view-tips">
-      <div class="section-title" style="margin-bottom:16px;font-size:16px">Savings Tips</div>
-      <button class="tips-refresh-btn" id="tips-refresh-btn" style="display:none">🔄 Refresh Tips</button>
-      <div id="tips-content"></div>
-    </div>
-
-    <div class="view" id="view-grade">
-      <div id="grade-content"></div>
-    </div>
-
-    <div class="view" id="view-profile">
-      <div id="profile-content"></div>
-    </div>
-
+    <div class="view" id="view-devices"><div class="section-title" style="margin-bottom:16px;font-size:16px">My Appliances</div><div id="devices-list"></div></div>
+    <div class="view" id="view-tips"><div class="section-title" style="margin-bottom:16px;font-size:16px">Savings Tips</div><button class="tips-refresh-btn" id="tips-refresh-btn" style="display:none">🔄 Refresh Tips</button><div id="tips-content"></div></div>
+    <div class="view" id="view-grade"><div id="grade-content"></div></div>
+    <div class="view" id="view-profile"><div id="profile-content"></div></div>
     <div class="view" id="view-settings">
       <div class="section-title" style="margin-bottom:16px;font-size:16px">Settings</div>
       <div class="card">
@@ -701,22 +342,16 @@
         <button class="settings-btn btn-primary" id="s-save">Save Settings</button>
         <button class="settings-btn btn-secondary" id="s-reset">Reset to Defaults</button>
       </div>
-      <div class="card">
-        <div class="section-title">Data</div>
-        <button class="settings-btn btn-danger" id="s-clear">🗑️ Clear All Appliances</button>
-      </div>
-      <div class="card" id="signout-card" style="display:none">
-        <button class="settings-btn btn-danger" id="logout-btn">🚪 Sign Out</button>
-      </div>
+      <div class="card"><div class="section-title">Data</div><button class="settings-btn btn-danger" id="s-clear">🗑️ Clear All Appliances</button><button class="settings-btn btn-secondary" id="export-pdf-btn" style="display:none">🖨️ Print Report</button></div>
+      <div class="card" id="signout-card" style="display:none"><button class="settings-btn btn-danger" id="logout-btn">🚪 Sign Out</button></div>
       <div class="donate-card">
         <div class="donate-card-title">☕ Buy Us a Coffee</div>
-        <div class="donate-card-sub">EcoSaver is free &amp; made with ❤️ by Filipino developers.<br>Your support keeps us going!</div>
+        <div class="donate-card-sub">EcoSaver is free & made with ❤️ by Filipino developers.<br>Your support keeps us going!</div>
         <button class="donate-btn" id="donate-open-btn">☕ Support via GCash</button>
       </div>
-      <div class="card"><div class="section-title">About</div><div class="about-text">EcoSaver v1.0.0<br>PWA • Firebase Auth • AES-GCM encrypted storage<br>Optimized for Philippine households (ANECO) • General Electric Cooperatives<br>Data stored locally on your device.</div></div>
+      <div class="card"><div class="section-title">About</div><div class="about-text">EcoSaver v1.0.0<br>PWA • Firebase Auth • AES‑GCM encrypted storage<br>Optimized for Philippine households (ANECO) • General Electric Cooperatives<br>Data stored locally on your device per account.</div></div>
     </div>
   </div>
-
   <nav class="bottom-nav">
     <div class="nav-tab active" data-view="home"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></div><div class="nav-label">Home</div><div class="nav-dot"></div></div>
     <div class="nav-tab" data-view="devices"><div class="nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-linecap="round" stroke-width="2"/></svg></div><div class="nav-label">Devices</div><div class="nav-dot"></div></div>
@@ -727,7 +362,7 @@
   </nav>
 </div>
 
-<button class="fab" id="fab" style="display: none;">+</button>
+<button class="fab" id="fab" style="display:none;">+</button>
 
 <div id="login-container">
   <div class="login-card">
@@ -735,22 +370,22 @@
     <h2>Secure Sign In</h2>
     <p>Access your dashboard using your Google account</p>
     <button id="google-login-btn">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon" style="width:20px; height:20px;">
-      Sign in with Google
+      <svg class="g-logo" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span class="g-text">Sign in with Google</span>
     </button>
-    <div class="login-footer"><p>🛡️ Secured by Firebase & Google</p><p>We never see your password – only your email and name.</p></div>
+    <div class="login-footer"><p>🛡️ Secured by Firebase &amp; Google</p><p>We never see your password – only your email and name.</p></div>
   </div>
 </div>
 
 <div class="sheet-overlay" id="sheet-overlay"></div>
 <div class="sheet" id="sheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-title" id="sheet-title">Add Appliance</div>
+  <div class="sheet-handle"></div><div class="sheet-title" id="sheet-title">Add Appliance</div>
   <div class="form-group"><label class="form-label">Appliance Name</label><input type="text" class="form-input" id="f-name" maxlength="80" placeholder="e.g. Living Room AC"><div class="form-error" id="e-name"></div></div>
   <div class="form-group"><label class="form-label">Watts (W)</label><input type="number" class="form-input" id="f-watts" min="1" step="1" placeholder="e.g. 1500"><div class="form-error" id="e-watts"></div></div>
   <div class="form-group"><label class="form-label">Quantity</label><input type="number" class="form-input" id="f-qty" min="1" step="1" value="1"><div class="form-error" id="e-qty"></div></div>
   <div class="form-group"><label class="form-label">Usage Time</label><div class="seg-switch"><button class="seg-btn active" id="seg-hr" data-unit="hr">Hours per day</button><button class="seg-btn" id="seg-min" data-unit="min">Minutes per day</button></div><input type="number" class="form-input" id="f-time" min="0" step="1" placeholder="e.g. 8"><div class="form-error" id="e-time"></div></div>
   <div class="form-group"><label class="form-label">Frequency</label><select class="form-select" id="f-freq"><option value="daily">Daily</option><option value="3x">3× per Week</option><option value="weekends">Weekends Only</option><option value="1x">1× per Week</option></select></div>
+  <div class="form-group" id="category-group" style="display:none"><label class="form-label">Category (Premium)</label><select class="form-select" id="f-category"><option value="General">General</option><option value="Kitchen">Kitchen</option><option value="Living Room">Living Room</option><option value="Bedroom">Bedroom</option><option value="Home Office">Home Office</option><option value="Laundry">Laundry</option><option value="Outdoor">Outdoor</option></select></div>
   <div class="sheet-actions"><button class="sheet-btn sheet-btn-cancel" id="sheet-cancel">Cancel</button><button class="sheet-btn sheet-btn-save" id="sheet-save">Save</button></div>
 </div>
 
@@ -766,768 +401,604 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase Auth Module -->
+<div class="sheet-overlay" id="payment-overlay" style="z-index:50"></div>
+<div class="sheet" id="payment-sheet" style="z-index:51">
+  <div class="sheet-handle"></div><div class="sheet-title">Subscribe to Premium</div>
+  <div id="payment-content"></div>
+  <button class="sheet-btn sheet-btn-cancel" id="payment-close" style="margin-top:12px">Cancel</button>
+</div>
+
+<!-- ═══════════ FIREBASE AUTH (module) ═══════════ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   const firebaseConfig = {
     apiKey: "AIzaSyAYQD-tz1pMYmbWl3Kcwd-8O7jQGwoJJiQ",
     authDomain: "ecosaver-9a4f8.firebaseapp.com",
     projectId: "ecosaver-9a4f8",
     storageBucket: "ecosaver-9a4f8.firebasestorage.app",
     messagingSenderId: "1050035280306",
-    appId: "1:1050035280306:web:2d30a176f4eec090936cab",
-    measurementId: "G-8Y17X16T68"
+    appId: "1:1050035280306:web:2d30a176f4eec090936cab"
   };
-
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
-
   const loginContainer = document.getElementById('login-container');
-  const appContainer   = document.getElementById('app');
-  const fab            = document.getElementById('fab');
-  const signoutCard    = document.getElementById('signout-card');
+  const appContainer = document.getElementById('app');
+  const fab = document.getElementById('fab');
+  const signoutCard = document.getElementById('signout-card');
   const googleLoginBtn = document.getElementById('google-login-btn');
-  const logoutBtn      = document.getElementById('logout-btn');
-
+  const logoutBtn = document.getElementById('logout-btn');
   window.getCurrentUser = () => auth.currentUser;
-
+  window.firebaseSignOut = () => signOut(auth);
+  function resetGoogleBtn() {
+    googleLoginBtn.disabled = false;
+    googleLoginBtn.querySelector('.g-text').textContent = 'Sign in with Google';
+  }
   function showApp(show) {
     if (show) {
-      appContainer.style.display = 'flex';
-      fab.style.display = 'flex';
+      appContainer.style.display = 'flex'; fab.style.display = 'flex';
       if (signoutCard) signoutCard.style.display = 'block';
       loginContainer.classList.add('hidden');
     } else {
-      appContainer.style.display = 'none';
-      fab.style.display = 'none';
+      appContainer.style.display = 'none'; fab.style.display = 'none';
       if (signoutCard) signoutCard.style.display = 'none';
       loginContainer.classList.remove('hidden');
+      resetGoogleBtn();
       window.appUser = null;
     }
   }
-
-  async function handleLogin() {
+  googleLoginBtn.addEventListener('click', async () => {
     googleLoginBtn.disabled = true;
-    googleLoginBtn.textContent = 'Signing in…';
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      googleLoginBtn.disabled = false;
-      googleLoginBtn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon" style="width:20px;height:20px;"> Sign in with Google';
-      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-        console.error('Login error:', error);
-        alert('Login failed: ' + error.message);
-      }
+    googleLoginBtn.querySelector('.g-text').textContent = 'Signing in…';
+    try { await signInWithPopup(auth, provider); } catch (e) {
+      resetGoogleBtn();
+      if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') console.error(e);
     }
-  }
-
-  async function handleSignOut() {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  }
-
-  googleLoginBtn.addEventListener('click', handleLogin);
-  if (logoutBtn) logoutBtn.addEventListener('click', handleSignOut);
-
-  onAuthStateChanged(auth, (user) => {
-    window.appUser = user ? { displayName: user.displayName, email: user.email, photoURL: user.photoURL } : null;
-    showApp(!!user);
+  });
+  if (logoutBtn) logoutBtn.addEventListener('click', () => signOut(auth));
+  let lastUserId = null;
+  onAuthStateChanged(auth, async (user) => {
+    window.appUser = user ? { uid: user.uid, displayName: user.displayName, email: user.email, photoURL: user.photoURL } : null;
+    if (user) {
+      if (lastUserId !== user.uid) { lastUserId = user.uid; window._currentUid = user.uid; if (typeof window.initApp === 'function') await window.initApp(true); }
+      showApp(true);
+    } else { lastUserId = null; window._currentUid = null; showApp(false); }
   });
 </script>
 
-<!-- Main App Script -->
+<!-- ═══════════ MAIN APP SCRIPT ═══════════ -->
 <script>
-  'use strict';
-
-  // ======================= SECURE STORAGE =======================
-  const SECURE_STORAGE = (function() {
-    let cachedKey = null;
-    async function getKey() {
-      if (cachedKey) return cachedKey;
-      const originSalt = window.location.origin + '::EcoSaver_v1';
-      const enc = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(originSalt), { name: 'PBKDF2' }, false, ['deriveKey']);
-      const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: enc.encode('EcoSaverSalt2025'), iterations: 100000, hash: 'SHA-256' }, keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
-      cachedKey = key; return key;
-    }
-    async function encrypt(plainText) {
-      const key = await getKey();
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const encoded = new TextEncoder().encode(plainText);
-      const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, encoded);
-      const combined = new Uint8Array(iv.length + ciphertext.byteLength);
-      combined.set(iv); combined.set(new Uint8Array(ciphertext), iv.length);
-      return btoa(String.fromCharCode(...combined));
-    }
-    async function decrypt(encryptedBase64) {
-      const key = await getKey();
-      const combined = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
-      const iv = combined.slice(0, 12);
-      const ciphertext = combined.slice(12);
-      const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ciphertext);
-      return new TextDecoder().decode(decrypted);
-    }
-    return {
-      async setItem(key, value) { const str = JSON.stringify(value); const encrypted = await encrypt(str); localStorage.setItem(key, encrypted); },
-      async getItem(key) {
-        const encrypted = localStorage.getItem(key);
-        if (!encrypted) return null;
-        try {
-          const decrypted = await decrypt(encrypted);
-          return JSON.parse(decrypted);
-        } catch(e) {
-          const raw = localStorage.getItem(key);
-          if (raw && (raw.startsWith('{') || raw.startsWith('['))) {
-            const parsed = JSON.parse(raw);
-            await this.setItem(key, parsed);
-            localStorage.removeItem(key);
-            return parsed;
-          }
-          return null;
-        }
-      },
-      async removeItem(key) { localStorage.removeItem(key); }
-    };
-  })();
-
-  const KEYS = {
-    appliances: 'esp_appliances',
-    rate: 'esp_rate',
-    budget: 'esp_budget',
-    premium: 'esp_premium',
-    bill: 'esp_bill',
-    anecoRates: 'esp_aneco_rates'
+'use strict';
+/* ========== STORAGE ========== */
+const SECURE_STORAGE = (function() {
+  let cachedKey = null;
+  async function getKey() {
+    if (cachedKey) return cachedKey;
+    const salt = window.location.origin + '::EcoSaver_v1';
+    const enc = new TextEncoder();
+    const km = await crypto.subtle.importKey('raw', enc.encode(salt), { name: 'PBKDF2' }, false, ['deriveKey']);
+    cachedKey = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: enc.encode('EcoSaverSalt2025'), iterations: 100000, hash: 'SHA-256' }, km, { name: 'AES-GCM', length: 256 }, false, ['encrypt','decrypt']);
+    return cachedKey;
+  }
+  async function encrypt(plain) {
+    const key = await getKey(); const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(plain));
+    const buf = new Uint8Array(12 + ct.byteLength); buf.set(iv); buf.set(new Uint8Array(ct), 12);
+    return btoa(String.fromCharCode(...buf));
+  }
+  async function decrypt(b64) {
+    const key = await getKey();
+    const buf = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.slice(0,12) }, key, buf.slice(12));
+    return new TextDecoder().decode(dec);
+  }
+  function userKey(key) { return (window._currentUid || 'anon') + '::' + key; }
+  return {
+    async setItem(key, value) { localStorage.setItem(userKey(key), await encrypt(JSON.stringify(value))); },
+    async getItem(key) {
+      const raw = localStorage.getItem(userKey(key));
+      if (!raw) return null;
+      try { return JSON.parse(await decrypt(raw)); } catch(e) {
+        if (raw.startsWith('{') || raw.startsWith('[')) { const p = JSON.parse(raw); await this.setItem(key,p); return p; }
+        return null;
+      }
+    },
+    async removeItem(key) { localStorage.removeItem(userKey(key)); }
   };
+})();
 
-  let state = {
-    appliances: [],
-    rate: 12,
-    budget: 1000,
-    premium: false,
-    bill: null,
-    anecoRates: {}
-  };
-  let editId = null, currentUnit = 'hr', tipsLoading = false, cachedTips = null, currentView = 'home', viewHistory = ['home'];
+const KEYS = { appliances:'esp_appliances', rate:'esp_rate', budget:'esp_budget', subscription:'esp_subscription', trialUsed:'esp_trial_used', bill:'esp_bill', anecoRates:'esp_aneco_rates', history:'esp_history' };
+const GCASH_NUMBER = '0991 231 0047';
+let state = { appliances:[], rate:12, budget:1000, subscription:null, trialUsed:false, bill:null, anecoRates:{}, history:[] };
+let editId=null, currentUnit='hr', tipsLoading=false, cachedTips=null, currentView='home', viewHistory=['home'], appInitialized=false;
 
-  function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
-  function fmt(n, dec=2) { return n.toFixed(dec).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-  function fmtCurrency(n) { return '₱' + fmt(n); }
-  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-  function vibrate(ms=40) { try { navigator.vibrate && navigator.vibrate(ms); } catch(e){} }
-  function showToast(msg, dur=2500) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), dur); }
+/* ========== HELPERS ========== */
+function esc(s) { const d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; }
+function fmt(n,d=2) { return Number(n).toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function fmtCurrency(n) { return '₱'+fmt(n); }
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2); }
+function vibrate(ms=40) { try { navigator.vibrate && navigator.vibrate(ms); } catch(e){} }
+function showToast(msg,d=2500) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),d); }
+function getEmoji(name) {
+  const n=name.toLowerCase();
+  if (/air\s?con|aircon|ac\b|split|window unit/.test(n)) return '❄️';
+  if (/tv|television|monitor/.test(n)) return '📺';
+  if (/ref|refrigerator|fridge/.test(n)) return '🧊';
+  if (/washing|washer|laundry/.test(n)) return '🫧';
+  if (/fan|electric fan/.test(n)) return '🌀';
+  if (/light|lamp|bulb|led/.test(n)) return '💡';
+  if (/computer|pc|desktop|laptop/.test(n)) return '💻';
+  if (/phone|charger|mobile/.test(n)) return '📱';
+  if (/water heater|heater|geyser/.test(n)) return '🔥';
+  if (/microwave|oven|airfryer/.test(n)) return '🍳';
+  if (/rice cooker|cooker/.test(n)) return '🍚';
+  if (/iron|clothes iron/.test(n)) return '👔';
+  if (/dispenser|water pump|pump/.test(n)) return '💧';
+  if (/router|wifi|modem/.test(n)) return '📡';
+  return '🔌';
+}
+function freqMult(f) { return {daily:1,'3x':3/7,weekends:2/7,'1x':1/7}[f]||1; }
+function calcKwh(a) { const hrs=a.unit==='min'?a.rawTime/60:a.rawTime; let k=(a.watts*a.qty*hrs*freqMult(a.freq)*30)/1000; if (/ref|refrigerator|fridge|freezer/i.test(a.name)) k*=0.4; return k; }
+function calcCost(kwh,rate) { return kwh*rate; }
+function getTotals() { const kwh=state.appliances.reduce((s,a)=>s+calcKwh(a),0); return { kwh, cost:calcCost(kwh,state.rate) }; }
+function calcGrade() { const {cost}=getTotals(); if (state.budget<=0) return 'A'; const p=cost/state.budget; return p<=0.8?'A':p<=1.0?'C':'F'; }
+function animateStatValue(el,newVal) { if (!el||el.textContent===newVal) return; el.textContent=newVal; el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce'); }
+function isPremiumActive() { return state.subscription?.expiry && Date.now()<state.subscription.expiry; }
+function isPendingApproval() { return state.subscription?.status==='pending'; }
 
-  function getEmoji(name) {
-    const n = name.toLowerCase();
-    if (/air\s?con|aircon|ac\b|split|window unit/.test(n)) return '❄️';
-    if (/tv|television|monitor/.test(n)) return '📺';
-    if (/ref|refrigerator|fridge/.test(n)) return '🧊';
-    if (/washing|washer|laundry/.test(n)) return '🫧';
-    if (/fan|electric fan/.test(n)) return '🌀';
-    if (/light|lamp|bulb|led/.test(n)) return '💡';
-    if (/computer|pc|desktop|laptop/.test(n)) return '💻';
-    if (/phone|charger|mobile/.test(n)) return '📱';
-    if (/water heater|heater|geyser/.test(n)) return '🔥';
-    if (/microwave|oven|airfryer/.test(n)) return '🍳';
-    if (/rice cooker|cooker/.test(n)) return '🍚';
-    if (/iron|clothes iron/.test(n)) return '👔';
-    if (/dispenser|water pump|pump/.test(n)) return '💧';
-    if (/router|wifi|modem/.test(n)) return '📡';
-    return '🔌';
-  }
-  function freqMult(f) { return { daily:1, '3x':3/7, weekends:2/7, '1x':1/7 }[f] || 1; }
-  function calcKwh(a) {
-    const hrs = a.unit === 'min' ? (a.rawTime/60) : a.rawTime;
-    let baseKwh = (a.watts * a.qty * hrs * freqMult(a.freq) * 30) / 1000;
-    if (/ref|refrigerator|fridge|freezer/i.test(a.name)) baseKwh = baseKwh * 0.4;
-    return baseKwh;
-  }
-  function calcCost(kwh, rate) { return kwh * rate; }
-  function getTotals() {
-    const kwh = state.appliances.reduce((s,a) => s + calcKwh(a), 0);
-    const cost = calcCost(kwh, state.rate);
-    return { kwh, cost };
-  }
-
-  // ========== ANECO RATE BREAKDOWN (editable rates, not amounts) ==========
-  const ANECO_SECTIONS = [
-    {
-      title: 'Generation & Transmission',
-      items: [
-        { id: 'gen_sys', name: 'Generation System Charge', rate: 7.2179, unit: '/kWh' },
-        { id: 'host_comm', name: 'Benefits to Host Communities', rate: 0.0282, unit: '/kWh' },
-        { id: 'power_act', name: 'Power Act Reduction', rate: -0.0889, unit: '/kWh' },
-        { id: 'trans_demand', name: 'Transmission Demand Charge', rate: 0.0000, unit: '/kW', perKw: true },
-        { id: 'trans_sys', name: 'Transmission System Charge', rate: 1.5346, unit: '/kWh' },
-        { id: 'sys_loss', name: 'System Loss Charge', rate: 0.8909, unit: '/kWh' }
-      ]
-    },
-    {
-      title: 'Distribution',
-      items: [
-        { id: 'dist_sys', name: 'Distribution System Charge', rate: 0.4613, unit: '/kWh' },
-        { id: 'dist_demand', name: 'Distribution Demand Charge', rate: 0.0000, unit: '/kW', perKw: true },
-        { id: 'supply_sys', name: 'Supply System Charge', rate: 0.5376, unit: '/kWh' },
-        { id: 'supply_retail', name: 'Supply Retail Customer Charge', rate: 0.0000, unit: '' },
-        { id: 'meter_sys', name: 'Metering System Charge', rate: 0.3205, unit: '/kWh' },
-        { id: 'meter_retail', name: 'Metering Retail Customer Charge', rate: 5.0000, unit: '/mo', fixed: true },
-        { id: 'reinvest', name: 'Reinvestment Fund for Sustainable CapEx', rate: 0.2178, unit: '/kWh' }
-      ]
-    },
-    {
-      title: 'Subsidy & Discount',
-      items: [
-        { id: 'lifeline', name: 'Lifeline Subsidy', rate: 0.0100, unit: '/kWh' },
-        { id: 'senior', name: 'Senior Citizen Subsidy/Discount', rate: 0.0005, unit: '/kWh' }
-      ]
-    },
-    {
-      title: 'Local Taxes',
-      items: [
-        { id: 'tax_energy', name: 'Local Franchise Tax Energy Charge', rate: 0.0000, unit: '/kWh' },
-        { id: 'tax_demand', name: 'Local Franchise Tax Demand Charge', rate: 0.0000, unit: '/kW', perKw: true },
-        { id: 'tax_fixed', name: 'Local Franchise Tax Fixed Monthly Charge', rate: 0.0000, unit: '/mo', fixed: true },
-        { id: 'biz_tax', name: 'Business Tax', rate: 0.0000, unit: '' },
-        { id: 'real_prop', name: 'Real Property Tax', rate: 0.0000, unit: '/kWh' }
-      ]
-    },
-    {
-      title: 'Value Added Tax (VAT)',
-      items: [
-        { id: 'vat_gen', name: 'Generation VAT', rate: 0.4275, unit: '/kWh' },
-        { id: 'vat_trans', name: 'Transmission VAT', rate: 0.1799, unit: '/kWh' },
-        { id: 'vat_sysloss', name: 'System Loss VAT', rate: 0.0598, unit: '/kWh' },
-        { id: 'vat_dist', name: 'Distribution VAT', rate: 0.1477, unit: '/kWh', extraFixed: 0.6000 },
-        { id: 'vat_subsidy', name: 'Subsidy VAT (Lifeline & Senior Citizen)', rate: 0.0013, unit: '/kWh' },
-        { id: 'vat_acrm', name: 'ACRM VAT Adjustment', rate: 0.0000, unit: '' },
-        { id: 'vat_icera', name: 'ICERA VAT Adjustment', rate: 0.0000, unit: '' },
-        { id: 'vat_gram', name: 'GRAM VAT Adjustment', rate: 0.0000, unit: '' }
-      ]
-    },
-    {
-      title: 'Universal Charges',
-      items: [
-        { id: 'npc_debts', name: 'NPC Stranded Debts', rate: 0.0428, unit: '/kWh' },
-        { id: 'npc_contract', name: 'NPC Stranded Contract Cost', rate: 0.0000, unit: '' },
-        { id: 'mission_spug', name: 'Missionary Electrification Charge - SPUG', rate: 0.2662, unit: '/kWh' },
-        { id: 'mission_redci', name: 'Missionary Electrification Charge - REDCI', rate: 0.0101, unit: '/kWh' },
-        { id: 'env_share', name: 'Environmental Share/Charge', rate: 0.0025, unit: '/kWh' },
-        { id: 'fit_all', name: 'FIT - All (Renewable)', rate: 0.2011, unit: '/kWh' },
-        { id: 'gea_all', name: 'GEA - All (Renewable)', rate: 0.0371, unit: '/kWh' },
-        { id: 'rec', name: 'REC (Renewables)', rate: -0.0864, unit: '/kWh' }
-      ]
-    },
-    {
-      title: 'Others',
-      items: [
-        { id: 'acrm_adj', name: 'ACRM Adjustment', rate: 0.0000, unit: '' },
-        { id: 'icera_adj', name: 'ICERA Adjustment', rate: 0.0000, unit: '' },
-        { id: 'gram_adj', name: 'GRAM Adjustment', rate: 0.0000, unit: '' }
-      ]
-    }
-  ];
-
-  function getAnecoAmount(item, kwh) {
-    let amount = 0;
-    if (item.perKw) return 0; // assume 0 demand
-    if (item.fixed) return item.rate; // fixed monthly
-    amount = item.rate * kwh;
-    if (item.extraFixed) amount += item.extraFixed;
-    return amount;
-  }
-
-  function renderEditableRates(kwh) {
-    let html = `<div style="margin-bottom:12px; font-size:12px; color:var(--c6); opacity:0.8">Edit per‑unit rates (₱/kWh, ₱/kW, ₱/mo). Total updates automatically.</div>`;
-    let grandTotal = 0;
-    ANECO_SECTIONS.forEach(section => {
-      html += `<div class="aneco-section-header">${esc(section.title)}</div>`;
-      let sectionTotal = 0;
-      section.items.forEach(item => {
-        let currentRate = item.rate;
-        const rateKey = item.id;
-        if (state.anecoRates && state.anecoRates[rateKey] !== undefined) {
-          currentRate = state.anecoRates[rateKey];
-        }
-        let amount = 0;
-        if (item.perKw) {
-          amount = 0; // assume 0 demand
-        } else if (item.fixed) {
-          amount = currentRate; // fixed monthly
-        } else {
-          amount = currentRate * kwh;
-          if (item.extraFixed) amount += item.extraFixed;
-        }
-        sectionTotal += amount;
-        const unitDisplay = item.unit ? ` ${item.unit}` : '';
-        html += `<div class="aneco-row">
-          <span style="flex:1; font-size:12px">${esc(item.name)}</span>
-          <div style="display:flex; align-items:center; gap:4px">
-            <span style="color:var(--c6); font-size:12px">₱</span>
-            <input type="number" class="aneco-rate-input" data-id="${item.id}" value="${currentRate.toFixed(4)}" step="0.0001" style="width:90px; text-align:right; background: rgba(13,34,24,0.5); border: 1px solid rgba(143,212,140,0.25); border-radius: 8px; padding: 4px 8px; color: var(--c6); font-family: 'DM Sans', sans-serif; font-size: 12px;">
-            <span style="color:var(--c6); font-size:11px; opacity:0.7">${unitDisplay}</span>
-          </div>
-        </div>`;
-      });
-      grandTotal += sectionTotal;
-      html += `<div class="aneco-row subtotal"><span>SUBTOTAL</span><span class="r-val">${fmtCurrency(sectionTotal)}</span></div>`;
+/* ========== ANECO RATES ========== */
+const ANECO_SECTIONS = [
+  { title:'Generation & Transmission', items:[
+    {id:'gen_sys',name:'Generation System Charge',rate:7.2179,unit:'/kWh'},{id:'host_comm',name:'Benefits to Host Communities',rate:0.0282,unit:'/kWh'},
+    {id:'power_act',name:'Power Act Reduction',rate:-0.0889,unit:'/kWh'},{id:'trans_demand',name:'Transmission Demand Charge',rate:0,unit:'/kW',perKw:true},
+    {id:'trans_sys',name:'Transmission System Charge',rate:1.5346,unit:'/kWh'},{id:'sys_loss',name:'System Loss Charge',rate:0.8909,unit:'/kWh'}
+  ]},
+  { title:'Distribution', items:[
+    {id:'dist_sys',name:'Distribution System Charge',rate:0.4613,unit:'/kWh'},{id:'dist_demand',name:'Distribution Demand Charge',rate:0,unit:'/kW',perKw:true},
+    {id:'supply_sys',name:'Supply System Charge',rate:0.5376,unit:'/kWh'},{id:'supply_retail',name:'Supply Retail Customer Charge',rate:0,unit:''},
+    {id:'meter_sys',name:'Metering System Charge',rate:0.3205,unit:'/kWh'},{id:'meter_retail',name:'Metering Retail Customer Charge',rate:5,unit:'/mo',fixed:true},
+    {id:'reinvest',name:'Reinvestment Fund for Sustainable CapEx',rate:0.2178,unit:'/kWh'}
+  ]},
+  { title:'Subsidy & Discount', items:[ {id:'lifeline',name:'Lifeline Subsidy',rate:0.0100,unit:'/kWh'},{id:'senior',name:'Senior Citizen Subsidy/Discount',rate:0.0005,unit:'/kWh'} ]},
+  { title:'Local Taxes', items:[ {id:'tax_energy',name:'Local Franchise Tax Energy Charge',rate:0,unit:'/kWh'},{id:'tax_demand',name:'Local Franchise Tax Demand Charge',rate:0,unit:'/kW',perKw:true},{id:'tax_fixed',name:'Local Franchise Tax Fixed Monthly Charge',rate:0,unit:'/mo',fixed:true},{id:'biz_tax',name:'Business Tax',rate:0,unit:''},{id:'real_prop',name:'Real Property Tax',rate:0,unit:'/kWh'} ]},
+  { title:'Value Added Tax (VAT)', items:[
+    {id:'vat_gen',name:'Generation VAT',rate:0.4275,unit:'/kWh'},{id:'vat_trans',name:'Transmission VAT',rate:0.1799,unit:'/kWh'},
+    {id:'vat_sysloss',name:'System Loss VAT',rate:0.0598,unit:'/kWh'},{id:'vat_dist',name:'Distribution VAT',rate:0.1477,unit:'/kWh',extraFixed:0.6000},
+    {id:'vat_subsidy',name:'Subsidy VAT (Lifeline & Senior Citizen)',rate:0.0013,unit:'/kWh'},{id:'vat_acrm',name:'ACRM VAT Adjustment',rate:0,unit:''},
+    {id:'vat_icera',name:'ICERA VAT Adjustment',rate:0,unit:''},{id:'vat_gram',name:'GRAM VAT Adjustment',rate:0,unit:''}
+  ]},
+  { title:'Universal Charges', items:[
+    {id:'npc_debts',name:'NPC Stranded Debts',rate:0.0428,unit:'/kWh'},{id:'npc_contract',name:'NPC Stranded Contract Cost',rate:0,unit:''},
+    {id:'mission_spug',name:'Missionary Electrification - SPUG',rate:0.2662,unit:'/kWh'},{id:'mission_redci',name:'Missionary Electrification - REDCI',rate:0.0101,unit:'/kWh'},
+    {id:'env_share',name:'Environmental Share/Charge',rate:0.0025,unit:'/kWh'},{id:'fit_all',name:'FIT - All (Renewable)',rate:0.2011,unit:'/kWh'},
+    {id:'gea_all',name:'GEA - All (Renewable)',rate:0.0371,unit:'/kWh'},{id:'rec',name:'REC (Renewables)',rate:-0.0864,unit:'/kWh'}
+  ]},
+  { title:'Others', items:[ {id:'acrm_adj',name:'ACRM Adjustment',rate:0,unit:''},{id:'icera_adj',name:'ICERA Adjustment',rate:0,unit:''},{id:'gram_adj',name:'GRAM Adjustment',rate:0,unit:''} ]}
+];
+function renderEditableRates(kwh) {
+  let html = `<div style="margin-bottom:12px;font-size:12px;color:var(--c6);opacity:0.8">Edit per‑unit rates (₱/kWh, ₱/kW, ₱/mo). Total updates automatically.</div>`;
+  let grand = 0;
+  ANECO_SECTIONS.forEach(section => {
+    html += `<div class="aneco-section-header">${esc(section.title)}</div>`;
+    let secTot = 0;
+    section.items.forEach(item => {
+      const r = (state.anecoRates && state.anecoRates[item.id] !== undefined) ? state.anecoRates[item.id] : item.rate;
+      const amt = item.perKw ? 0 : (item.fixed ? r : r * kwh + (item.extraFixed||0));
+      secTot += amt;
+      html += `<div class="aneco-row"><span style="flex:1;font-size:12px">${esc(item.name)}</span><div style="display:flex;align-items:center;gap:4px"><span style="color:var(--c6);font-size:12px">₱</span><input type="number" class="aneco-rate-input" data-id="${item.id}" value="${r.toFixed(4)}" step="0.0001" style="width:90px;text-align:right;background:rgba(13,34,24,0.5);border:1px solid rgba(143,212,140,0.25);border-radius:8px;padding:4px 8px;color:var(--c6);font-family:'DM Sans',sans-serif;font-size:12px;"><span style="color:var(--c6);font-size:11px;opacity:0.7">${item.unit||''}</span></div></div>`;
     });
-    html += `<div class="aneco-row total" id="aneco-total-row">
-      <span>Total Estimated Bill</span>
-      <span class="r-val" id="aneco-total-val">${fmtCurrency(grandTotal)}</span>
-    </div>`;
-    return html;
-  }
-
-  function updateAnecoTotals() {
-    const kwh = getTotals().kwh;
-    let grandTotal = 0;
-    const sections = document.querySelectorAll('.aneco-section-header');
-    const rows = document.querySelectorAll('.aneco-row:not(.total):not(.subtotal)');
+    grand += secTot;
+    html += `<div class="aneco-row subtotal"><span>SUBTOTAL</span><span class="r-val">${fmtCurrency(secTot)}</span></div>`;
+  });
+  html += `<div class="aneco-row total" id="aneco-total-row"><span>Total Estimated Bill</span><span class="r-val" id="aneco-total-val">${fmtCurrency(grand)}</span></div>`;
+  return html;
+}
+function updateAnecoTotals() {
+  const kwh = getTotals().kwh;
+  let grand = 0;
+  ANECO_SECTIONS.forEach((section, si) => {
+    let secTot = 0;
+    section.items.forEach(item => {
+      const inp = document.querySelector(`.aneco-rate-input[data-id="${item.id}"]`);
+      if (!inp) return;
+      const r = parseFloat(inp.value) || 0;
+      secTot += item.perKw ? 0 : (item.fixed ? r : r * kwh + (item.extraFixed||0));
+    });
     const subtotals = document.querySelectorAll('.aneco-row.subtotal');
-    let sectionIdx = -1;
-    let sectionTotal = 0;
-    const sectionTotals = [];
+    if (subtotals[si]) subtotals[si].querySelector('.r-val').textContent = fmtCurrency(secTot);
+    grand += secTot;
+  });
+  const tv = document.getElementById('aneco-total-val');
+  if (tv) tv.textContent = fmtCurrency(grand);
+}
+async function saveAnecoRates() {
+  const rates = {};
+  document.querySelectorAll('.aneco-rate-input').forEach(inp => { const v = parseFloat(inp.value); if (!isNaN(v)) rates[inp.dataset.id] = v; });
+  state.anecoRates = rates;
+  await SECURE_STORAGE.setItem(KEYS.anecoRates, rates);
+}
 
-    rows.forEach(row => {
-      const input = row.querySelector('.aneco-rate-input');
-      if (!input) return;
-      const rate = parseFloat(input.value) || 0;
-      const itemId = input.dataset.id;
-      const item = ANECO_SECTIONS.flatMap(s => s.items).find(i => i.id === itemId);
-      if (!item) return;
-      let amount = 0;
-      if (item.perKw) {
-        amount = 0;
-      } else if (item.fixed) {
-        amount = rate;
-      } else {
-        amount = rate * kwh;
-        if (item.extraFixed) amount += item.extraFixed;
-      }
-      sectionTotal += amount;
-      // Check for section break (simplified: after each section header we'll accumulate)
-      // Better: we'll recalc directly from all inputs
-    });
+/* ========== SUBSCRIPTION / PAYMENT ========== */
+function openPaymentSheet(plan, days, amount) {
+  const overlay = document.getElementById('payment-overlay'), sheet = document.getElementById('payment-sheet'), content = document.getElementById('payment-content');
+  content.innerHTML = `
+    <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:14px;padding:14px;margin-bottom:20px;">
+      <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:#fde68a">${esc(plan)}</div>
+      <div style="font-size:30px;font-weight:900;color:var(--c5);margin:4px 0">₱${amount}</div>
+      <div style="font-size:12px;color:rgba(253,230,138,0.65)">${days} days of premium access</div>
+    </div>
+    <div style="font-size:13px;color:var(--c6);font-weight:600;margin-bottom:10px">How to pay:</div>
+    <div style="background:rgba(13,34,24,0.6);border:1px solid rgba(143,212,140,0.2);border-radius:14px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--c6);line-height:1.7">
+      1. Open <strong style="color:#fbbf24">GCash / Maya</strong> or your bank app.<br>
+      2. Send <strong style="color:var(--c5)">₱${amount}</strong> to <strong style="color:var(--c5)">${GCASH_NUMBER}</strong> (EcoSaver Developer).<br>
+      3. Enter your GCash <strong>reference number</strong> and <strong>sender name</strong> below.<br>
+      4. Tap <em>Submit Request</em>. We'll verify within 24 hrs and activate your plan.
+    </div>
+    <div class="form-group"><label class="form-label">GCash / Maya Reference No.</label><input type="text" class="form-input" id="payment-ref" placeholder="e.g. 2024123456789"></div>
+    <div class="form-group"><label class="form-label">Your Name (as shown in GCash)</label><input type="text" class="form-input" id="payment-name" placeholder="e.g. Juan Dela Cruz"></div>
+    <div class="form-group"><label class="form-label">Your Email (for confirmation)</label><input type="email" class="form-input" id="payment-email" value="${window.appUser?.email||''}"></div>
+    <button class="sheet-btn sheet-btn-save" id="payment-submit" style="margin-top:4px">📩 Submit Activation Request</button>
+    <div style="font-size:11px;color:rgba(200,232,192,0.4);text-align:center;margin-top:10px;line-height:1.6">Activation is manual and takes up to 24 hours.<br>You'll be notified once your plan is activated.</div>
+  `;
+  document.getElementById('payment-submit').addEventListener('click', async () => {
+    const ref = document.getElementById('payment-ref').value.trim(), name = document.getElementById('payment-name').value.trim(), email = document.getElementById('payment-email').value.trim();
+    if (!ref) { showToast('Please enter your reference number'); return; }
+    if (!name) { showToast('Please enter your name'); return; }
+    if (!email) { showToast('Please enter your email'); return; }
+    state.subscription = { status:'pending', plan, days, amount, ref, name, email, requestedAt:Date.now() };
+    await save(); closePaymentSheet(); renderProfile(); showToast('✅ Request submitted! We\'ll activate within 24 hrs.', 4000);
+  });
+  overlay.classList.add('open'); sheet.classList.add('open');
+}
+function closePaymentSheet() { document.getElementById('payment-overlay').classList.remove('open'); document.getElementById('payment-sheet').classList.remove('open'); }
+async function activateTrial() { state.subscription={status:'active',plan:'1-Month Trial',expiry:Date.now()+30*86400000}; state.trialUsed=true; await save(); renderProfile(); renderHome(); showToast('🎉 Free trial activated! Enjoy 30 days of premium.', 3500); }
 
-    // Recalculate properly by iterating sections
-    let secTotalIdx = 0;
-    ANECO_SECTIONS.forEach((section, secIdx) => {
-      let secTotal = 0;
-      section.items.forEach(item => {
-        const input = document.querySelector(`.aneco-rate-input[data-id="${item.id}"]`);
-        if (!input) return;
-        const rate = parseFloat(input.value) || 0;
-        let amt = 0;
-        if (item.perKw) amt = 0;
-        else if (item.fixed) amt = rate;
-        else {
-          amt = rate * kwh;
-          if (item.extraFixed) amt += item.extraFixed;
-        }
-        secTotal += amt;
-      });
-      const subtotalEls = document.querySelectorAll('.aneco-row.subtotal');
-      if (subtotalEls[secIdx]) {
-        subtotalEls[secIdx].querySelector('.r-val').textContent = fmtCurrency(secTotal);
-      }
-      grandTotal += secTotal;
-    });
-    document.getElementById('aneco-total-val').textContent = fmtCurrency(grandTotal);
-  }
+/* ========== PROFILE ========== */
+function renderProfile() {
+  const container = document.getElementById('profile-content');
+  const user = window.appUser;
+  if (!user) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔒</div><div class="empty-title">Not signed in</div><div class="empty-sub">Please sign in to see your profile.</div></div>`; return; }
+  const active = isPremiumActive(), pending = isPendingApproval();
+  const badge = active ? ' <span class="premium-badge">PREMIUM</span>' : '';
+  let statusText = active ? `Premium active until ${new Date(state.subscription.expiry).toLocaleDateString('en-PH')}` : (pending ? '⏳ Activation pending (within 24 hrs)' : 'Free Plan');
+  let pendingBanner = pending ? `<div class="pending-banner"><strong>⏳ Payment Verification Pending</strong> Your request for <em>${esc(state.subscription.plan)}</em> (₱${state.subscription.amount}) was received.<br>Ref: <strong>${esc(state.subscription.ref)}</strong> · Sent by: ${esc(state.subscription.name)}<br>We'll activate your plan within 24 hours. 🙏</div>` : '';
+  container.innerHTML = `
+    <div class="card card-lg" style="text-align:center">
+      <div style="font-size:48px;margin-bottom:10px">👤</div>
+      <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--c6)">${esc(user.displayName||'User')}${badge}</div>
+      <div style="font-size:13px;color:var(--c6);opacity:0.7;margin-top:4px">${esc(user.email)}</div>
+      <div style="font-size:12px;color:var(--c5);margin-top:6px">${statusText}</div>
+    </div>
+    ${pendingBanner}
+    ${(!active && !pending) ? `
+    <div class="section-title">Choose Your Plan</div>
+    ${!state.trialUsed ? `<div class="plan-card"><div class="plan-header"><div class="plan-name">🎓 1-Month Trial</div><div class="plan-save">FREE</div></div><div class="plan-price" style="margin-top:8px">₱0</div><div class="plan-per">Full access for 30 days – no payment needed</div><div class="plan-btn trial" id="start-trial">Start Free Trial</div></div>` : ''}
+    <div class="plan-card"><div class="plan-header"><div class="plan-name">📅 1-Month Standard</div></div><div class="plan-price">₱59</div><div class="plan-per">Ideal for short-term tracking</div><div class="plan-btn" data-plan="1-Month Standard" data-days="30" data-amount="59">Subscribe ₱59</div></div>
+    <div class="plan-card recommended"><div class="plan-header"><div class="plan-name">💪 3-Month Bundle</div><div class="plan-save">Save 15%</div></div><div class="plan-price">₱149</div><div class="plan-per">~₱50/mo • Most popular</div><div class="plan-btn" data-plan="3-Month Bundle" data-days="90" data-amount="149">Subscribe ₱149</div></div>
+    <div class="plan-card"><div class="plan-header"><div class="plan-name">🚀 1-Year Pass</div><div class="plan-save">Save 35%</div></div><div class="plan-price">₱449</div><div class="plan-per">~₱37/mo • Best value</div><div class="plan-btn" data-plan="1-Year Pass" data-days="365" data-amount="449">Subscribe ₱449</div></div>
+    ` : ''}
+    <button class="settings-btn btn-secondary" id="logout-from-profile-btn" style="margin-top:12px">🚪 Sign Out</button>
+  `;
+  if (!state.trialUsed) document.getElementById('start-trial')?.addEventListener('click', activateTrial);
+  document.querySelectorAll('.plan-btn:not(.trial)').forEach(btn => btn.addEventListener('click', () => openPaymentSheet(btn.dataset.plan, parseInt(btn.dataset.days), parseInt(btn.dataset.amount))));
+  document.getElementById('logout-from-profile-btn')?.addEventListener('click', () => { if (typeof window.firebaseSignOut === 'function') window.firebaseSignOut(); });
+}
 
-  async function saveAnecoRates() {
-    const rates = {};
-    document.querySelectorAll('.aneco-rate-input').forEach(inp => {
-      const id = inp.dataset.id;
-      const val = parseFloat(inp.value);
-      if (!isNaN(val)) rates[id] = val;
-    });
-    state.anecoRates = rates;
-    await SECURE_STORAGE.setItem(KEYS.anecoRates, rates);
-  }
-
-  // ========== PROFILE ==========
-  function renderProfile() {
-    const container = document.getElementById('profile-content');
-    const user = window.appUser;
-    if (!user) {
-      container.innerHTML = `<div class="empty-state"><div class="empty-icon">🔒</div><div class="empty-title">Not signed in</div><div class="empty-sub">Please sign in to see your profile.</div></div>`;
-      return;
-    }
-    const premiumBadge = state.premium ? ' <span class="premium-badge">PREMIUM</span>' : '';
-    const premiumBtnText = state.premium ? '✅ Premium Activated' : '⭐ Activate Premium (Unlock Best Features)';
-    container.innerHTML = `
-      <div class="card card-lg" style="text-align:center">
-        <div style="font-size:48px; margin-bottom:10px">👤</div>
-        <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--c6)">${esc(user.displayName || 'User')}${premiumBadge}</div>
-        <div style="font-size:13px; color:var(--c6); opacity:0.7; margin-top:4px">${esc(user.email)}</div>
-      </div>
-      <div class="card">
-        <div class="section-title">Premium Access</div>
-        <p style="font-size:13px; color:var(--c6); opacity:0.8; margin-bottom:12px">Unlock bill upload & comparison, advanced analytics, and more.</p>
-        <button class="settings-btn btn-primary" id="premium-toggle-btn">${premiumBtnText}</button>
-      </div>
-      <div class="card" style="display:none" id="premium-features-card">
-        <div class="section-title">Premium Features</div>
-        <ul style="font-size:13px; color:var(--c6); opacity:0.8; padding-left:18px; line-height:1.6">
-          <li>📄 Upload ANECO bill & compare</li>
-          <li>🧾 Custom unbundled rate breakdown</li>
-          <li>📊 Advanced usage insights</li>
-        </ul>
-      </div>
-      <button class="settings-btn btn-secondary" id="logout-from-profile-btn" style="margin-top:12px">🚪 Sign Out</button>
-    `;
-    if (state.premium) document.getElementById('premium-features-card').style.display = 'block';
-    document.getElementById('premium-toggle-btn').addEventListener('click', async () => {
-      state.premium = !state.premium;
-      await SECURE_STORAGE.setItem(KEYS.premium, state.premium);
-      renderProfile();
-      renderHome();
-      showToast(state.premium ? 'Premium activated! 🎉' : 'Premium deactivated');
-    });
-    document.getElementById('logout-from-profile-btn').addEventListener('click', () => {
-      const logoutBtn = document.getElementById('logout-btn');
-      if (logoutBtn) logoutBtn.click();
-    });
-  }
-
-  // ========== BILL UPLOAD & COMPARISON ==========
-  function renderBillUpload() {
-    const container = document.getElementById('bill-inner');
-    const totals = getTotals();
-    const computedKwh = totals.kwh;
-    const computedCost = totals.cost;
-    let bill = state.bill || { kwh: '', cost: '', imageDataURL: '' };
-    container.innerHTML = `
-      <div style="margin-bottom:14px; font-size:13px; color:var(--c6); opacity:0.85">Upload a photo of your ANECO bill (optional) and enter the billed kWh & total cost to compare.</div>
-      <div class="form-group">
-        <label class="form-label">Bill Photo (optional)</label>
-        <input type="file" accept="image/*" id="bill-image-input" style="color:var(--c6); background:transparent">
-        <div id="bill-image-preview" style="margin-top:8px">${bill.imageDataURL ? `<img src="${bill.imageDataURL}" style="max-width:100%; border-radius:8px">` : ''}</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Billed kWh</label>
-        <input type="number" class="form-input" id="bill-kwh" value="${bill.kwh}" step="0.01" min="0" placeholder="e.g. 230.5">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Billed Total (₱)</label>
-        <input type="number" class="form-input" id="bill-cost" value="${bill.cost}" step="0.01" min="0" placeholder="e.g. 2850.00">
-      </div>
-      <button class="settings-btn btn-primary" id="bill-save-btn">💾 Save & Compare</button>
-      <div id="comparison-result" style="margin-top:16px"></div>
-    `;
-
-    document.getElementById('bill-image-input').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(ev) {
-        const dataUrl = ev.target.result;
-        state.bill = state.bill || {};
-        state.bill.imageDataURL = dataUrl;
-        document.getElementById('bill-image-preview').innerHTML = `<img src="${dataUrl}" style="max-width:100%; border-radius:8px">`;
-        SECURE_STORAGE.setItem(KEYS.bill, state.bill);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById('bill-save-btn').addEventListener('click', async () => {
-      const kwh = parseFloat(document.getElementById('bill-kwh').value);
-      const cost = parseFloat(document.getElementById('bill-cost').value);
-      if (isNaN(kwh) || isNaN(cost) || kwh < 0 || cost < 0) {
-        showToast('Please enter valid kWh and cost');
-        return;
-      }
-      state.bill = { kwh, cost, imageDataURL: state.bill?.imageDataURL || '' };
-      await SECURE_STORAGE.setItem(KEYS.bill, state.bill);
-      const diffKwh = kwh - computedKwh;
-      const diffCost = cost - computedCost;
-      const signKwh = diffKwh >= 0 ? '+' : '';
-      const signCost = diffCost >= 0 ? '+' : '';
-      document.getElementById('comparison-result').innerHTML = `
-        <div class="card" style="background: rgba(13,34,24,0.7);">
-          <div class="section-title">Comparison</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px">
-            <div>📊 Computed kWh</div><div style="text-align:right">${fmt(computedKwh, 2)}</div>
-            <div>🧾 Bill kWh</div><div style="text-align:right">${fmt(kwh, 2)}</div>
-            <div style="border-top:1px solid rgba(143,212,140,0.2); padding-top:6px">📊 Computed Cost</div><div style="text-align:right; border-top:1px solid rgba(143,212,140,0.2); padding-top:6px">${fmtCurrency(computedCost)}</div>
-            <div>🧾 Bill Cost</div><div style="text-align:right">${fmtCurrency(cost)}</div>
-            <div style="border-top:1px solid rgba(143,212,140,0.2); padding-top:6px; color:var(--c5)">⚡ Difference</div>
-            <div style="text-align:right; border-top:1px solid rgba(143,212,140,0.2); padding-top:6px; color:${diffCost > 0 ? '#f87171' : 'var(--c5)'}">
-              ${signKwh}${fmt(diffKwh, 2)} kWh<br>${signCost}${fmtCurrency(diffCost)}
-            </div>
-          </div>
-          <div style="margin-top:12px; font-size:12px; color:var(--c6); opacity:0.7">
-            ${diffCost > 0 ? '⚠️ Your actual bill is higher than computed. Check for hidden appliances or meter issues.' : '✅ Your computed usage matches or is above the bill. Good estimation!'}
-          </div>
-        </div>
-      `;
-      showToast('Bill saved & compared!');
-    });
-  }
-
-  // ========== RENDER FUNCTIONS ==========
-  function renderHome() {
-    const { kwh, cost } = getTotals(); const grade = calcGrade(); const pct = state.budget > 0 ? Math.min((cost / state.budget) * 100, 150) : 0;
-    document.getElementById('hero-num').textContent = fmt(cost);
-    const prog = document.getElementById('hero-progress'); prog.style.width = Math.min(pct, 100) + '%'; prog.className = 'progress-fill ' + (pct <= 80 ? 'green' : pct <= 100 ? 'amber' : 'red');
-    document.getElementById('budget-used-lbl').textContent = fmtCurrency(cost) + ' used';
-    const left = state.budget - cost; document.getElementById('budget-left-lbl').textContent = (left >= 0 ? fmtCurrency(left) + ' left' : fmtCurrency(-left) + ' over');
-    animateStatValue(document.getElementById('stat-kwh-mo'), fmt(kwh, 1)); animateStatValue(document.getElementById('stat-kwh-day'), fmt(kwh/30, 1)); animateStatValue(document.getElementById('stat-count'), state.appliances.length);
-    const pill = document.getElementById('grade-pill'); pill.textContent = grade; pill.className = 'grade-pill ' + grade;
-    const alertsArea = document.getElementById('alerts-area'); alertsArea.innerHTML = '';
-    const pctRaw = state.budget > 0 ? cost / state.budget : 0;
-    if (pctRaw > 1) alertsArea.innerHTML = `<div class="alert alert-danger">⚠️ You've exceeded your monthly budget by ${fmtCurrency(cost - state.budget)}!</div>`;
-    else if (pctRaw >= 0.8) alertsArea.innerHTML = `<div class="alert alert-warn">⚡ Approaching budget limit — ${fmt((1-pctRaw)*100,0)}% remaining.</div>`;
-    const vampArea = document.getElementById('vampire-area');
-    if (state.appliances.length > 0) {
-      const sorted = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a));
-      const v = sorted[0]; const vKwh = calcKwh(v);
-      vampArea.innerHTML = `<div class="vampire-card"><div class="section-title" style="color:#fca5a5">⚡ Energy Vampire</div><div class="vampire-name">${esc(getEmoji(v.name))} ${esc(v.name)}</div><div class="vampire-sub">${fmt(vKwh,2)} kWh/mo · ${fmtCurrency(calcCost(vKwh, state.rate))}/mo</div></div>`;
-    } else vampArea.innerHTML = '';
-    const aneco = document.getElementById('aneco-section');
-    if (kwh > 0) {
-      aneco.style.display = 'block';
-      document.getElementById('aneco-inner').innerHTML = renderEditableRates(kwh);
-      document.querySelectorAll('.aneco-rate-input').forEach(inp => {
-        inp.addEventListener('input', async () => {
-          updateAnecoTotals();
-          await saveAnecoRates();
-        });
-      });
-    } else {
-      aneco.style.display = 'none';
-    }
-    const billSection = document.getElementById('bill-upload-section');
-    if (state.premium && kwh > 0) {
-      billSection.style.display = 'block';
-      renderBillUpload(); // <- FIX: now renders the form
-    } else {
-      billSection.style.display = 'none';
-    }
-    const top5 = document.getElementById('top5-list');
-    if (state.appliances.length === 0) top5.innerHTML = `<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance and start tracking your energy use.</div></div>`;
-    else {
-      const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b), state.rate) - calcCost(calcKwh(a), state.rate)).slice(0,5);
-      top5.innerHTML = sorted.map(a => { const k = calcKwh(a); const c = calcCost(k, state.rate); return `<div class="appliance-mini"><div class="mini-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="mini-cost">${fmtCurrency(c)}</div></div>`; }).join('');
-    }
-  }
-
-  function renderDevices() {
-    const list = document.getElementById('devices-list');
-    if (state.appliances.length === 0) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🔌</div><div class="empty-title">No appliances added</div><div class="empty-sub">Tap the + button to add your first appliance.</div></div>`; return; }
-    list.innerHTML = state.appliances.map(a => {
-      const k = calcKwh(a); const c = calcCost(k, state.rate);
-      const timeStr = a.unit === 'min' ? `${a.rawTime} min/day` : `${a.rawTime} hr/day`;
-      const freqStr = { daily:'Daily', '3x':'3×/week', weekends:'Weekends', '1x':'1×/week' }[a.freq] || a.freq;
-      return `<div class="card device-card"><div class="device-header"><div class="device-emoji">${esc(getEmoji(a.name))}</div><div><div class="device-name">${esc(a.name)}</div><div class="device-spec">${esc(a.watts)}W × ${esc(String(a.qty))} · ${esc(timeStr)} · ${esc(freqStr)}</div></div></div><div class="device-stats"><div class="device-stat"><div class="val">${fmt(k,2)}</div><div class="lbl">kWh/mo</div></div><div class="device-stat"><div class="val">${fmtCurrency(c)}</div><div class="lbl">Cost/mo</div></div></div><div class="device-actions"><button class="btn-sm btn-edit" onclick="openEditSheet('${esc(a.id)}')">✏️ Edit</button><button class="btn-sm btn-delete" onclick="deleteAppliance('${esc(a.id)}')">🗑️ Delete</button></div></div>`;
-    }).join('');
-  }
-
-  function renderGrade() {
-    const gc = document.getElementById('grade-content');
-    if (state.budget <= 0) { gc.innerHTML = `<div class="empty-state"><div class="empty-icon">⚙️</div><div class="empty-title">No budget set</div><div class="empty-sub">Set a monthly budget in Settings to see your efficiency grade.</div></div>`; return; }
-    const { cost } = getTotals(); const g = calcGrade(); const pct = (cost / state.budget) * 100;
-    const msgs = { A:'Excellent! Your household is energy-efficient. Keep up the great habits!', C:'Approaching your budget limit. Consider reducing usage on high-consumption appliances.', F:'Over budget! Review your high-usage appliances and cut back where possible.' };
-    const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b), state.rate) - calcCost(calcKwh(a), state.rate));
-    gc.innerHTML = `<div class="grade-big"><div class="grade-letter ${g}">${g}</div><div class="grade-msg">${msgs[g]}<br><br>Using <b>${fmt(pct,1)}%</b> of your <b>${fmtCurrency(state.budget)}</b> budget.</div></div>${sorted.length > 0 ? `<div class="card"><div class="section-title">Appliance Breakdown</div>${sorted.map(a => { const k = calcKwh(a); const c = calcCost(k, state.rate); const ap = state.budget > 0 ? (c/state.budget*100) : 0; return `<div class="grade-appliance-row"><div class="ga-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="ga-right"><div class="mini-cost">${fmtCurrency(c)}</div><div class="ga-pct">${fmt(ap,1)}% of budget</div></div></div>`; }).join('')}</div>` : ''}`;
-  }
-
-  function buildApplianceList() { return state.appliances.map(a => { const k = calcKwh(a); const timeStr = a.unit === 'min' ? `${a.rawTime} min/day` : `${a.rawTime} hr/day`; return `- ${a.name}: ${a.watts}W × ${a.qty}, ${timeStr}, ${a.freq}, ${fmt(k,2)} kWh/mo`; }).join('\n'); }
-
-  async function fetchTips() {
-    if (state.appliances.length === 0) { renderTips(null); return; }
-    if (tipsLoading) return;
-    tipsLoading = true;
-    document.getElementById('tips-content').innerHTML = `<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-    document.getElementById('tips-refresh-btn').style.display = 'none';
-    const appList = buildApplianceList();
-    const prompt = `You are an energy-saving advisor for Philippine households. The user has these appliances:\n${appList}\n\nGenerate exactly 6 energy-saving tips. IMPORTANT RULES:\n1. You may ONLY give tips that specifically mention at least one of the user's actual appliances from the list above.\n2. Do not suggest any appliance, device, or action that refers to an appliance not in the list.\n3. Make every tip directly actionable for the user's exact inventory.\n4. Do NOT suggest shifting usage to off-peak hours or time-of-day scheduling.\n5. Return ONLY a JSON array of exactly 6 objects with this structure: {"emoji":"<emoji>","title":"<short title>","body":"<2-3 sentences of advice mentioning real appliance names and numbers>","saving":"<e.g. ~₱120/mo>"}\n6. No markdown, no preamble, just the JSON array.`;
-    try {
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-      });
-      const data = await resp.json();
-      const text = data.content?.map(b => b.text || '').join('');
-      const clean = text.replace(/```json|```/g, '').trim();
-      const tips = JSON.parse(clean);
-      if (Array.isArray(tips) && tips.length > 0) { cachedTips = tips; renderTips(tips); tipsLoading = false; return; }
-    } catch(e) {}
-    const fallback = generateFallbackTips();
-    cachedTips = fallback; renderTips(fallback); tipsLoading = false;
-  }
-
-  function generateFallbackTips() {
-    const sorted = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a));
-    const tips = [];
-    for (const a of sorted) {
-      if (tips.length >= 6) break;
-      const k = calcKwh(a); const saving = calcCost(k * 0.15, state.rate);
-      tips.push({ emoji: getEmoji(a.name), title: `Reduce ${a.name} runtime`, body: `Your ${a.name} (${a.watts}W × ${a.qty}) is at ${fmt(k,2)} kWh/mo. Try reducing daily usage by 30 minutes. Small changes add up.`, saving: `~${fmtCurrency(saving)}/mo` });
-    }
-    const fillers = [
-      { emoji:'💡', title:'Unplug idle appliances', body:`Standby power still draws. Unplug your ${state.appliances[0]?.name || 'devices'} when not in use.`, saving:'~₱50/mo' },
-      { emoji:'🌡️', title:'Optimal temperature settings', body:`If your appliance has a thermostat, set it to the ideal energy-saving level. Every degree helps.`, saving:'~₱80/mo' },
-    ];
-    for (const f of fillers) { if (tips.length >= 6) break; tips.push(f); }
-    return tips.slice(0, 6);
-  }
-
-  function renderTips(tips) {
-    tipsLoading = false;
-    const content = document.getElementById('tips-content');
-    const refreshBtn = document.getElementById('tips-refresh-btn');
-    if (state.appliances.length === 0) { refreshBtn.style.display = 'none'; content.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-title">No appliances added</div><div class="empty-sub">Add appliances to get personalized energy saving tips.</div></div>`; return; }
-    refreshBtn.style.display = 'flex';
-    if (!tips) { content.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-title">No tips yet</div><div class="empty-sub">Tap Refresh Tips to generate personalized savings advice.</div></div>`; return; }
-    content.innerHTML = tips.map((t, i) => `<div class="card tip-card" style="animation-delay:${i*0.06}s"><div class="tip-emoji">${esc(t.emoji)}</div><div class="tip-title">${esc(t.title)}</div><div class="tip-body">${esc(t.body)}</div><span class="tip-saving">${esc(t.saving)}</span></div>`).join('');
-  }
-
-  function renderSettings() { document.getElementById('s-rate').value = state.rate; document.getElementById('s-budget').value = state.budget; }
-
-  // ========== INITIALISATION ==========
-  function initSettings() {
-    document.getElementById('s-save').addEventListener('click', async () => { const r = parseFloat(document.getElementById('s-rate').value); const b = parseFloat(document.getElementById('s-budget').value); if (isNaN(r) || r <= 0) { showToast('Invalid electricity rate'); return; } if (isNaN(b) || b <= 0) { showToast('Invalid budget'); return; } state.rate = r; state.budget = b; await save(); renderAll(); showToast('Settings saved ✅'); });
-    document.getElementById('s-reset').addEventListener('click', async () => { state.rate = 12; state.budget = 1000; renderSettings(); await save(); renderAll(); showToast('Reset to defaults'); });
-    document.getElementById('s-clear').addEventListener('click', async () => { if (confirm('Delete ALL appliances? This cannot be undone.')) { state.appliances = []; cachedTips = null; await save(); renderAll(); showToast('All appliances cleared'); } });
-  }
-
-  const GCASH_NUMBER = '0991 231 0047';
-  function initDonation() {
-    document.getElementById('gcash-number').textContent = GCASH_NUMBER;
-    document.getElementById('donate-open-btn').addEventListener('click', openDonateModal);
-    document.getElementById('donate-overlay').addEventListener('click', closeDonateModal);
-    document.getElementById('donate-close-btn').addEventListener('click', closeDonateModal);
-    document.getElementById('gcash-copy-btn').addEventListener('click', () => { const num = GCASH_NUMBER.replace(/[-\s]/g, ''); navigator.clipboard.writeText(num).then(() => { showToast('GCash number copied! ☕'); }).catch(() => { showToast('GCash: ' + GCASH_NUMBER); }); vibrate(40); });
-  }
-
-  function openDonateModal() { document.getElementById('donate-overlay').classList.add('open'); document.getElementById('donate-modal').classList.add('open'); vibrate(30); }
-  function closeDonateModal() { document.getElementById('donate-overlay').classList.remove('open'); document.getElementById('donate-modal').classList.remove('open'); }
-  function openSheet() { document.getElementById('sheet-overlay').classList.add('open'); document.getElementById('sheet').classList.add('open'); document.getElementById('fab').classList.add('sheet-open'); document.getElementById('f-name').focus(); }
-  function closeSheet() { document.getElementById('sheet-overlay').classList.remove('open'); document.getElementById('sheet').classList.remove('open'); document.getElementById('fab').classList.remove('sheet-open'); resetSheet(); editId = null; }
-  function resetSheet() { document.getElementById('sheet-title').textContent = 'Add Appliance'; document.getElementById('f-name').value = ''; document.getElementById('f-watts').value = ''; document.getElementById('f-qty').value = '1'; document.getElementById('f-time').value = ''; document.getElementById('f-freq').value = 'daily'; ['e-name','e-watts','e-qty','e-time'].forEach(id => document.getElementById(id).textContent = ''); ['f-name','f-watts','f-qty','f-time'].forEach(id => document.getElementById(id).classList.remove('error')); setUnit('hr'); }
-  function setUnit(unit) { currentUnit = unit; document.getElementById('seg-hr').classList.toggle('active', unit === 'hr'); document.getElementById('seg-min').classList.toggle('active', unit === 'min'); const inp = document.getElementById('f-time'); if (unit === 'hr') { inp.max = 24; inp.step = 0.1; inp.placeholder = 'e.g. 8'; } else { inp.max = 1440; inp.step = 1; inp.placeholder = 'e.g. 120'; } }
-  function openEditSheet(id) { const a = state.appliances.find(x => x.id === id); if (!a) return; editId = id; document.getElementById('sheet-title').textContent = 'Edit Appliance'; document.getElementById('f-name').value = a.name; document.getElementById('f-watts').value = a.watts; document.getElementById('f-qty').value = a.qty; document.getElementById('f-freq').value = a.freq; setUnit(a.unit || 'hr'); document.getElementById('f-time').value = a.rawTime; openSheet(); }
-  function validateSheet() { let valid = true; const name = document.getElementById('f-name').value.trim(); const watts = parseFloat(document.getElementById('f-watts').value); const qty = parseInt(document.getElementById('f-qty').value); const time = parseFloat(document.getElementById('f-time').value); const max = currentUnit === 'hr' ? 24 : 1440; if (!name) { setErr('f-name','e-name','Name is required'); valid = false; } else clearErr('f-name','e-name'); if (isNaN(watts) || watts <= 0) { setErr('f-watts','e-watts','Enter a valid wattage (>0)'); valid = false; } else clearErr('f-watts','e-watts'); if (isNaN(qty) || qty < 1) { setErr('f-qty','e-qty','Quantity must be ≥ 1'); valid = false; } else clearErr('f-qty','e-qty'); if (isNaN(time) || time < 0 || time > max) { setErr('f-time','e-time',`Usage time must be 0–${max}`); valid = false; } else clearErr('f-time','e-time'); return valid; }
-  function setErr(inputId, errId, msg) { document.getElementById(inputId).classList.add('error'); document.getElementById(errId).textContent = msg; vibrate(60); }
-  function clearErr(inputId, errId) { document.getElementById(inputId).classList.remove('error'); document.getElementById(errId).textContent = ''; }
-  async function saveAppliance() { if (!validateSheet()) return; const name = document.getElementById('f-name').value.trim(); const watts = parseFloat(document.getElementById('f-watts').value); const qty = parseInt(document.getElementById('f-qty').value); const rawTime = parseFloat(document.getElementById('f-time').value) || 0; const freq = document.getElementById('f-freq').value; const unit = currentUnit; const hours = unit === 'min' ? rawTime/60 : rawTime; if (rawTime === 0) { if (!confirm('Usage time is 0. This appliance won\'t contribute to calculations. Continue?')) return; } if (editId) { const idx = state.appliances.findIndex(x => x.id === editId); if (idx !== -1) state.appliances[idx] = { ...state.appliances[idx], name, watts, qty, rawTime, unit, freq, hours }; } else { state.appliances.push({ id: uid(), name, watts, qty, rawTime, unit, freq, hours }); } await save(); cachedTips = null; renderAll(); closeSheet(); showToast(editId ? 'Appliance updated ✅' : 'Appliance added ✅'); if (currentView === 'tips') fetchTips(); }
-  async function deleteAppliance(id) { if (!confirm('Delete this appliance?')) return; state.appliances = state.appliances.filter(a => a.id !== id); await save(); cachedTips = null; renderAll(); showToast('Deleted'); }
-
-  function switchView(view, direction) {
-    if (view === currentView) return;
-    const oldView = document.getElementById('view-' + currentView);
-    const newView = document.getElementById('view-' + view);
-    if (!direction) {
-      const oldIdx = viewHistory.indexOf(currentView);
-      const newIdx = viewHistory.indexOf(view);
-      direction = (newIdx > oldIdx) ? 'right' : 'left';
-    }
-    document.querySelectorAll('.view').forEach(v => { v.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right'); });
-    if (direction === 'right') { oldView.classList.add('slide-out-left'); newView.classList.add('slide-in-right'); }
-    else { oldView.classList.add('slide-out-right'); newView.classList.add('slide-in-left'); }
-    oldView.classList.remove('active'); newView.classList.add('active');
-    viewHistory = viewHistory.filter(v => v !== view); viewHistory.push(view);
-    currentView = view;
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
-    setTimeout(() => { oldView.classList.remove('slide-out-left', 'slide-out-right'); newView.classList.remove('slide-in-right', 'slide-in-left'); }, 400);
-    if (view === 'tips' && !cachedTips && state.appliances.length > 0) fetchTips();
-    if (view === 'tips' && state.appliances.length === 0) renderTips(null);
-    if (view === 'grade') renderGrade();
-    if (view === 'profile') renderProfile();
-  }
-
-  function initAneco() {
-    const btn = document.getElementById('aneco-toggle');
-    const body = document.getElementById('aneco-body');
-    btn.addEventListener('click', () => { const open = body.classList.toggle('open'); btn.classList.toggle('open', open); });
-    const billBtn = document.getElementById('bill-toggle');
-    const billBody = document.getElementById('bill-body');
-    billBtn.addEventListener('click', () => { const open = billBody.classList.toggle('open'); billBtn.classList.toggle('open', open); });
-  }
-
-  function renderAll() {
-    renderHome();
-    renderDevices();
-    renderGrade();
-    renderSettings();
-    if (currentView === 'profile') renderProfile();
-  }
-
-  async function load() {
-    try {
-      const a = await SECURE_STORAGE.getItem(KEYS.appliances); if (a) state.appliances = a;
-      const r = await SECURE_STORAGE.getItem(KEYS.rate); if (r) state.rate = parseFloat(r);
-      const b = await SECURE_STORAGE.getItem(KEYS.budget); if (b) state.budget = parseFloat(b);
-      const p = await SECURE_STORAGE.getItem(KEYS.premium); if (p !== null) state.premium = !!p;
-      const bill = await SECURE_STORAGE.getItem(KEYS.bill); if (bill) state.bill = bill;
-      const rates = await SECURE_STORAGE.getItem(KEYS.anecoRates); if (rates) state.anecoRates = rates;
-    } catch(e) { console.warn(e); }
-  }
-
-  async function save() {
-    await SECURE_STORAGE.setItem(KEYS.appliances, state.appliances);
-    await SECURE_STORAGE.setItem(KEYS.rate, state.rate);
-    await SECURE_STORAGE.setItem(KEYS.budget, state.budget);
-    await SECURE_STORAGE.setItem(KEYS.premium, state.premium);
+/* ========== BILL COMPARE (no image) ========== */
+function renderBillUpload() {
+  const container = document.getElementById('bill-inner');
+  const { kwh: compKwh, cost: compCost } = getTotals();
+  const bill = state.bill || { kwh: '', cost: '' };
+  container.innerHTML = `
+    <p style="font-size:12px;color:rgba(200,232,192,0.55);margin-bottom:14px;line-height:1.5">Enter the kWh and total amount from your actual ANECO bill to compare against your computed usage.</p>
+    <div class="form-group"><label class="form-label">Billed kWh</label><input type="number" class="form-input" id="bill-kwh" value="${bill.kwh}" step="0.01" min="0" placeholder="e.g. 180"></div>
+    <div class="form-group"><label class="form-label">Billed Total Amount (₱)</label><input type="number" class="form-input" id="bill-cost" value="${bill.cost}" step="0.01" min="0" placeholder="e.g. 2340.50"></div>
+    <button class="settings-btn btn-primary" id="bill-save-btn">💾 Save &amp; Compare</button>
+    <div id="comparison-result" style="margin-top:16px"></div>
+  `;
+  if (bill.kwh && bill.cost) renderComparison(compKwh, compCost, bill.kwh, bill.cost);
+  document.getElementById('bill-save-btn').addEventListener('click', async () => {
+    const bKwh = parseFloat(document.getElementById('bill-kwh').value), bCost = parseFloat(document.getElementById('bill-cost').value);
+    if (isNaN(bKwh) || isNaN(bCost) || bKwh<0 || bCost<0) { showToast('Please enter valid values'); return; }
+    state.bill = { kwh: bKwh, cost: bCost };
     await SECURE_STORAGE.setItem(KEYS.bill, state.bill);
-    await SECURE_STORAGE.setItem(KEYS.anecoRates, state.anecoRates);
+    renderComparison(compKwh, compCost, bKwh, bCost);
+    showToast('Bill saved & compared! ✅');
+  });
+}
+function renderComparison(compKwh, compCost, bKwh, bCost) {
+  const dKwh = bKwh - compKwh, dCost = bCost - compCost;
+  document.getElementById('comparison-result').innerHTML = `
+    <div class="card" style="background:rgba(13,34,24,0.7)"><div class="section-title">Comparison Result</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;color:var(--c6)">
+        <div>📊 Computed kWh</div><div style="text-align:right">${fmt(compKwh,2)}</div>
+        <div>🧾 Billed kWh</div><div style="text-align:right">${fmt(bKwh,2)}</div>
+        <div style="border-top:1px solid rgba(143,212,140,0.15);padding-top:6px">📊 Computed Cost</div><div style="text-align:right;border-top:1px solid rgba(143,212,140,0.15);padding-top:6px">${fmtCurrency(compCost)}</div>
+        <div>🧾 Billed Cost</div><div style="text-align:right">${fmtCurrency(bCost)}</div>
+        <div style="border-top:1px solid rgba(143,212,140,0.15);padding-top:6px;color:var(--c5)">⚡ Difference</div><div style="text-align:right;border-top:1px solid rgba(143,212,140,0.15);padding-top:6px;color:${dCost>0?'#f87171':'var(--c5)'}">${dKwh>=0?'+':''}${fmt(dKwh,2)} kWh<br>${dCost>=0?'+':''}${fmtCurrency(dCost)}</div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--c6);opacity:0.7">${dCost>0?'⚠️ Your actual bill is higher than computed. Check for untracked appliances.':'✅ Your computed usage matches or is above the bill. Good estimation!'}</div>
+    </div>`;
+}
+
+/* ========== HISTORY CHART ========== */
+function recordMonthlySnapshot() {
+  const today = new Date();
+  const month = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  const { kwh, cost } = getTotals();
+  const idx = state.history.findIndex(h => h.month === month);
+  if (idx !== -1) state.history[idx] = { month, kwh, cost };
+  else { state.history.push({ month, kwh, cost }); if (state.history.length > 12) state.history.shift(); }
+  SECURE_STORAGE.setItem(KEYS.history, state.history);
+}
+function renderHistoryChart() {
+  const container = document.getElementById('history-chart');
+  if (!isPremiumActive()) { container.style.display = 'none'; return; }
+  container.style.display = 'block';
+  const canvas = document.getElementById('history-canvas'), ctx = canvas.getContext('2d');
+  const data = state.history.slice(-6);
+  if (data.length === 0) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '13px DM Sans'; ctx.fillStyle = 'var(--c6)';
+    ctx.fillText('No history yet — add appliances to start tracking.', 10, 50);
+    return;
   }
+  const maxKwh = Math.max(...data.map(d => d.kwh), 1), maxCost = Math.max(...data.map(d => d.cost), 1);
+  const w = canvas.parentElement.clientWidth - 36; canvas.width = w;
+  const barWidth = Math.floor(w / data.length) - 10;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  data.forEach((d, i) => {
+    const x = i * (barWidth + 10) + 5;
+    const kwhHeight = (d.kwh / maxKwh) * 100, costHeight = (d.cost / maxCost) * 100;
+    ctx.fillStyle = 'var(--c5)'; ctx.fillRect(x, 120 - kwhHeight, barWidth, kwhHeight);
+    ctx.fillStyle = '#fbbf24'; ctx.fillRect(x + barWidth/2 - 2, 120 - costHeight, 4, costHeight);
+    ctx.fillStyle = 'var(--c6)'; ctx.font = '9px DM Sans'; ctx.fillText(d.month.slice(5), x + barWidth/4, 135);
+  });
+}
 
-  function updateClock() { const ph = new Intl.DateTimeFormat('en-PH', { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:true, timeZone:'Asia/Manila' }).format(new Date()); document.getElementById('clock').textContent = ph + ' PHT'; }
-  function calcGrade() { const { cost } = getTotals(); if (state.budget <= 0) return 'A'; const pct = cost / state.budget; if (pct <= 0.80) return 'A'; if (pct <= 1.00) return 'C'; return 'F'; }
-  function animateStatValue(el, newVal) { if (el.textContent === newVal) return; el.textContent = newVal; el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce'); }
+/* ========== RENDER HOME ========== */
+function renderHome() {
+  const { kwh, cost } = getTotals();
+  const grade = calcGrade(), pct = state.budget > 0 ? Math.min((cost / state.budget) * 100, 150) : 0;
+  document.getElementById('hero-num').textContent = fmt(cost);
+  const prog = document.getElementById('hero-progress'); prog.style.width = Math.min(pct, 100) + '%'; prog.className = 'progress-fill ' + (pct <= 80 ? 'green' : pct <= 100 ? 'amber' : 'red');
+  document.getElementById('budget-used-lbl').textContent = fmtCurrency(cost) + ' used';
+  const left = state.budget - cost;
+  document.getElementById('budget-left-lbl').textContent = left >= 0 ? fmtCurrency(left) + ' left' : fmtCurrency(-left) + ' over';
+  animateStatValue(document.getElementById('stat-kwh-mo'), fmt(kwh,1));
+  animateStatValue(document.getElementById('stat-kwh-day'), fmt(kwh/30,1));
+  animateStatValue(document.getElementById('stat-count'), String(state.appliances.length));
+  const pill = document.getElementById('grade-pill'); pill.textContent = grade; pill.className = 'grade-pill ' + grade;
+  const alerts = document.getElementById('alerts-area'); alerts.innerHTML = '';
+  const pctRaw = state.budget > 0 ? cost / state.budget : 0;
+  if (pctRaw > 1) alerts.innerHTML = `<div class="alert alert-danger">⚠️ Budget exceeded by ${fmtCurrency(cost - state.budget)}!</div>`;
+  else if (pctRaw >= 0.8) alerts.innerHTML = `<div class="alert alert-warn">⚡ Approaching budget — ${fmt((1-pctRaw)*100,0)}% remaining.</div>`;
+  const vampArea = document.getElementById('vampire-area');
+  if (state.appliances.length > 0) {
+    const top = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a))[0], vk = calcKwh(top);
+    vampArea.innerHTML = `<div class="vampire-card"><div class="section-title" style="color:#fca5a5">⚡ Energy Vampire</div><div class="vampire-name">${esc(getEmoji(top.name))} ${esc(top.name)}</div><div class="vampire-sub">${fmt(vk,2)} kWh/mo · ${fmtCurrency(calcCost(vk, state.rate))}/mo</div></div>`;
+  } else vampArea.innerHTML = '';
+  renderHistoryChart();
+  const anecoSec = document.getElementById('aneco-section');
+  if (kwh > 0) {
+    anecoSec.style.display = 'block';
+    document.getElementById('aneco-inner').innerHTML = renderEditableRates(kwh);
+    document.querySelectorAll('.aneco-rate-input').forEach(inp => inp.addEventListener('input', async () => { updateAnecoTotals(); await saveAnecoRates(); }));
+  } else anecoSec.style.display = 'none';
+  const billSec = document.getElementById('bill-upload-section');
+  if (isPremiumActive() && kwh > 0) { billSec.style.display = 'block'; renderBillUpload(); } else billSec.style.display = 'none';
+  const top5 = document.getElementById('top5-list');
+  if (state.appliances.length === 0) top5.innerHTML = `<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance.</div></div>`;
+  else {
+    const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b),state.rate) - calcCost(calcKwh(a),state.rate)).slice(0,5);
+    top5.innerHTML = sorted.map(a => { const k = calcKwh(a), c = calcCost(k, state.rate); return `<div class="appliance-mini"><div class="mini-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="mini-cost">${fmtCurrency(c)}</div></div>`; }).join('');
+  }
+  recordMonthlySnapshot();
+}
 
-  window.openEditSheet = openEditSheet;
-  window.deleteAppliance = deleteAppliance;
+/* ========== DEVICES (with category) ========== */
+function renderDevices() {
+  const list = document.getElementById('devices-list');
+  if (state.appliances.length === 0) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🔌</div><div class="empty-title">No appliances added</div><div class="empty-sub">Tap the + button to add your first appliance.</div></div>`; return; }
+  list.innerHTML = state.appliances.map(a => {
+    const k = calcKwh(a), c = calcCost(k, state.rate);
+    const timeStr = a.unit==='min' ? `${a.rawTime} min/day` : `${a.rawTime} hr/day`;
+    const freqStr = {daily:'Daily','3x':'3×/week',weekends:'Weekends','1x':'1×/week'}[a.freq]||a.freq;
+    return `<div class="card device-card">
+      <div class="device-header"><div class="device-emoji">${esc(getEmoji(a.name))}</div><div><div class="device-name">${esc(a.name)}</div><div class="device-spec">${esc(a.watts)}W × ${esc(String(a.qty))} · ${esc(timeStr)} · ${esc(freqStr)} · ${esc(a.category||'General')}</div></div></div>
+      <div class="device-stats"><div class="device-stat"><div class="val">${fmt(k,2)}</div><div class="lbl">kWh/mo</div></div><div class="device-stat"><div class="val">${fmtCurrency(c)}</div><div class="lbl">Cost/mo</div></div></div>
+      <div class="device-actions"><button class="btn-sm btn-edit" onclick="openEditSheet('${esc(a.id)}')">✏️ Edit</button><button class="btn-sm btn-delete" onclick="deleteAppliance('${esc(a.id)}')">🗑️ Delete</button></div>
+    </div>`;
+  }).join('');
+}
 
-  async function initApp() {
-    await load();
-    renderAll();
-    updateClock();
-    setInterval(updateClock, 1000);
-    initAneco();
-    initSettings();
-    initDonation();
+/* ========== GRADE ========== */
+function renderGrade() {
+  const gc = document.getElementById('grade-content');
+  if (state.budget <= 0) { gc.innerHTML = `<div class="empty-state"><div class="empty-icon">⚙️</div><div class="empty-title">No budget set</div><div class="empty-sub">Set a monthly budget in Settings.</div></div>`; return; }
+  const { cost } = getTotals(), g = calcGrade(), pct = (cost / state.budget) * 100;
+  const msgs = { A:'Excellent! Your household is energy-efficient. Keep up the great habits!', C:'Approaching your budget limit. Consider reducing usage on high-consumption appliances.', F:'Over budget! Review your high-usage appliances and cut back where possible.' };
+  const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b),state.rate) - calcCost(calcKwh(a),state.rate));
+  gc.innerHTML = `<div class="grade-big"><div class="grade-letter ${g}">${g}</div><div class="grade-msg">${msgs[g]}<br><br>Using <b>${fmt(pct,1)}%</b> of your <b>${fmtCurrency(state.budget)}</b> budget.</div></div>${sorted.length ? `<div class="card"><div class="section-title">Appliance Breakdown</div>${sorted.map(a => { const k=calcKwh(a),c=calcCost(k,state.rate),ap=state.budget>0?c/state.budget*100:0; return `<div class="grade-appliance-row"><div class="ga-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="ga-right"><div class="mini-cost">${fmtCurrency(c)}</div><div class="ga-pct">${fmt(ap,1)}% of budget</div></div></div>` }).join('')}</div>` : ''}`;
+}
+
+/* ========== TIPS ========== */
+function buildApplianceList() { return state.appliances.map(a => { const k=calcKwh(a), t=a.unit==='min'?`${a.rawTime} min/day`:`${a.rawTime} hr/day`; return `- ${a.name}: ${a.watts}W × ${a.qty}, ${t}, ${a.freq}, ${fmt(k,2)} kWh/mo`; }).join('\n'); }
+async function fetchTips() {
+  if (state.appliances.length === 0) { renderTips(null); return; }
+  if (tipsLoading) return;
+  tipsLoading = true;
+  document.getElementById('tips-content').innerHTML = `<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  document.getElementById('tips-refresh-btn').style.display = 'none';
+  const prompt = `You are an energy-saving advisor for Philippine households. The user has these appliances:\n${buildApplianceList()}\n\nGenerate exactly 6 energy-saving tips. Rules:\n1. Each tip must mention at least one of the user's actual appliances.\n2. No off-peak/time-of-day scheduling suggestions.\n3. Return ONLY a JSON array of 6 objects: {"emoji":"","title":"","body":"","saving":"~₱X/mo"}\n4. No markdown, no preamble.`;
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{ role:'user', content:prompt }] }) });
+    const data = await resp.json();
+    const text = (data.content||[]).map(b=>b.text||'').join('');
+    const clean = text.replace(/```json|```/g,'').trim();
+    const tips = JSON.parse(clean);
+    if (Array.isArray(tips) && tips.length > 0) { cachedTips = tips; renderTips(tips); tipsLoading = false; return; }
+  } catch(e) {}
+  const fb = generateFallbackTips(); cachedTips = fb; renderTips(fb); tipsLoading = false;
+}
+function generateFallbackTips() {
+  const sorted = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a));
+  const tips = [];
+  for (const a of sorted) { if (tips.length >= 6) break; const k = calcKwh(a); tips.push({ emoji: getEmoji(a.name), title: `Reduce ${a.name} runtime`, body: `Your ${a.name} (${a.watts}W × ${a.qty}) uses ${fmt(k,2)} kWh/mo. Try cutting daily usage by 30 minutes for meaningful savings.`, saving: `~${fmtCurrency(calcCost(k*0.15, state.rate))}/mo` }); }
+  return tips.slice(0,6);
+}
+function renderTips(tips) {
+  tipsLoading = false;
+  const content = document.getElementById('tips-content'), btn = document.getElementById('tips-refresh-btn');
+  if (state.appliances.length === 0) { btn.style.display='none'; content.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-title">No appliances added</div><div class="empty-sub">Add appliances to get personalized energy saving tips.</div></div>`; return; }
+  btn.style.display = 'flex';
+  if (!tips) { content.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-title">No tips yet</div><div class="empty-sub">Tap Refresh Tips to generate personalized savings advice.</div></div>`; return; }
+  content.innerHTML = tips.map((t,i) => `<div class="card tip-card" style="animation-delay:${i*0.06}s"><div class="tip-emoji">${esc(t.emoji)}</div><div class="tip-title">${esc(t.title)}</div><div class="tip-body">${esc(t.body)}</div><span class="tip-saving">${esc(t.saving)}</span></div>`).join('');
+}
+
+/* ========== SETTINGS ========== */
+function renderSettings() { document.getElementById('s-rate').value = state.rate; document.getElementById('s-budget').value = state.budget; }
+function initSettings() {
+  document.getElementById('s-save').addEventListener('click', async () => { const r = parseFloat(document.getElementById('s-rate').value), b = parseFloat(document.getElementById('s-budget').value); if (isNaN(r)||r<=0) { showToast('Invalid electricity rate'); return; } if (isNaN(b)||b<=0) { showToast('Invalid budget'); return; } state.rate = r; state.budget = b; await save(); renderAll(); showToast('Settings saved ✅'); });
+  document.getElementById('s-reset').addEventListener('click', async () => { state.rate = 12; state.budget = 1000; renderSettings(); await save(); renderAll(); showToast('Reset to defaults'); });
+  document.getElementById('s-clear').addEventListener('click', async () => { if (confirm('Delete ALL appliances? This cannot be undone.')) { state.appliances = []; cachedTips = null; state.history = []; await save(); renderAll(); showToast('All appliances cleared'); } });
+}
+
+/* ========== DONATION MODAL ========== */
+function initDonation() {
+  document.getElementById('donate-open-btn').addEventListener('click', () => { document.getElementById('donate-overlay').classList.add('open'); document.getElementById('donate-modal').classList.add('open'); vibrate(30); });
+  document.getElementById('donate-overlay').addEventListener('click', closeDonateModal);
+  document.getElementById('donate-close-btn').addEventListener('click', closeDonateModal);
+  document.getElementById('gcash-copy-btn').addEventListener('click', () => { navigator.clipboard.writeText(GCASH_NUMBER.replace(/\s/g,'')).then(()=>showToast('GCash number copied! ☕')).catch(()=>showToast('GCash: '+GCASH_NUMBER)); vibrate(40); });
+}
+function closeDonateModal() { document.getElementById('donate-overlay').classList.remove('open'); document.getElementById('donate-modal').classList.remove('open'); }
+
+/* ========== SHEET (add/edit appliance) ========== */
+function openSheet() { document.getElementById('sheet-overlay').classList.add('open'); document.getElementById('sheet').classList.add('open'); document.getElementById('fab').classList.add('sheet-open'); document.getElementById('f-name').focus(); showCategoryField(); }
+function closeSheet() { document.getElementById('sheet-overlay').classList.remove('open'); document.getElementById('sheet').classList.remove('open'); document.getElementById('fab').classList.remove('sheet-open'); resetSheet(); editId=null; }
+function resetSheet() {
+  document.getElementById('sheet-title').textContent = 'Add Appliance';
+  ['f-name','f-watts','f-time'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-qty').value = '1'; document.getElementById('f-freq').value = 'daily';
+  ['e-name','e-watts','e-qty','e-time'].forEach(id => document.getElementById(id).textContent = '');
+  ['f-name','f-watts','f-qty','f-time'].forEach(id => document.getElementById(id).classList.remove('error'));
+  setUnit('hr'); const cat = document.getElementById('f-category'); if (cat) cat.value = 'General';
+  showCategoryField();
+}
+function setUnit(unit) { currentUnit = unit; document.getElementById('seg-hr').classList.toggle('active', unit==='hr'); document.getElementById('seg-min').classList.toggle('active', unit==='min'); const inp = document.getElementById('f-time'); if (unit==='hr') { inp.max=24; inp.step=0.1; inp.placeholder='e.g. 8'; } else { inp.max=1440; inp.step=1; inp.placeholder='e.g. 120'; } }
+function openEditSheet(id) { const a = state.appliances.find(x => x.id===id); if (!a) return; editId = id; document.getElementById('sheet-title').textContent = 'Edit Appliance'; document.getElementById('f-name').value = a.name; document.getElementById('f-watts').value = a.watts; document.getElementById('f-qty').value = a.qty; document.getElementById('f-freq').value = a.freq; setUnit(a.unit||'hr'); document.getElementById('f-time').value = a.rawTime; const cat = document.getElementById('f-category'); if (cat) cat.value = a.category || 'General'; openSheet(); }
+function validateSheet() {
+  let ok = true;
+  const name = document.getElementById('f-name').value.trim(), watts = parseFloat(document.getElementById('f-watts').value), qty = parseInt(document.getElementById('f-qty').value), time = parseFloat(document.getElementById('f-time').value), max = currentUnit==='hr'?24:1440;
+  if (!name) { setErr('f-name','e-name','Name is required'); ok=false; } else clearErr('f-name','e-name');
+  if (isNaN(watts)||watts<=0) { setErr('f-watts','e-watts','Enter a valid wattage (>0)'); ok=false; } else clearErr('f-watts','e-watts');
+  if (isNaN(qty)||qty<1) { setErr('f-qty','e-qty','Quantity must be ≥ 1'); ok=false; } else clearErr('f-qty','e-qty');
+  if (isNaN(time)||time<0||time>max) { setErr('f-time','e-time',`Usage time must be 0–${max}`); ok=false; } else clearErr('f-time','e-time');
+  return ok;
+}
+function setErr(iId,eId,msg) { document.getElementById(iId).classList.add('error'); document.getElementById(eId).textContent=msg; vibrate(60); }
+function clearErr(iId,eId) { document.getElementById(iId).classList.remove('error'); document.getElementById(eId).textContent=''; }
+async function saveAppliance() {
+  if (!validateSheet()) return;
+  const name = document.getElementById('f-name').value.trim(), watts = parseFloat(document.getElementById('f-watts').value), qty = parseInt(document.getElementById('f-qty').value), rawTime = parseFloat(document.getElementById('f-time').value)||0, freq = document.getElementById('f-freq').value, unit = currentUnit, hours = unit==='min'?rawTime/60:rawTime, category = isPremiumActive() ? (document.getElementById('f-category')?.value || 'General') : 'General';
+  if (rawTime===0 && !confirm('Usage time is 0. This appliance won\'t contribute to calculations. Continue?')) return;
+  if (editId) { const idx = state.appliances.findIndex(x=>x.id===editId); if (idx!==-1) state.appliances[idx] = { ...state.appliances[idx], name, watts, qty, rawTime, unit, freq, hours, category }; }
+  else state.appliances.push({ id: uid(), name, watts, qty, rawTime, unit, freq, hours, category });
+  await save(); cachedTips = null; renderAll(); closeSheet();
+  showToast(editId ? 'Appliance updated ✅' : 'Appliance added ✅');
+  if (currentView==='tips') fetchTips();
+}
+async function deleteAppliance(id) { if (!confirm('Delete this appliance?')) return; state.appliances = state.appliances.filter(a=>a.id!==id); await save(); cachedTips = null; renderAll(); showToast('Deleted'); }
+function showCategoryField() { const group = document.getElementById('category-group'); if (group) group.style.display = isPremiumActive() ? 'block' : 'none'; }
+function setupExportButton() { const btn = document.getElementById('export-pdf-btn'); if (btn) { btn.style.display = isPremiumActive() ? 'block' : 'none'; btn.onclick = () => window.print(); } }
+
+/* ========== VIEW SWITCHING ========== */
+function switchView(view) {
+  if (view===currentView) return;
+  const oldEl = document.getElementById('view-'+currentView), newEl = document.getElementById('view-'+view);
+  const navOrder = ['home','devices','tips','grade','profile','settings'];
+  const dir = navOrder.indexOf(view) >= navOrder.indexOf(currentView) ? 'right' : 'left';
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('slide-out-left','slide-out-right','slide-in-left','slide-in-right'));
+  if (dir==='right') { oldEl.classList.add('slide-out-left'); newEl.classList.add('slide-in-right'); }
+  else { oldEl.classList.add('slide-out-right'); newEl.classList.add('slide-in-left'); }
+  oldEl.classList.remove('active'); newEl.classList.add('active');
+  viewHistory = viewHistory.filter(v=>v!==view); viewHistory.push(view);
+  currentView = view;
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active', t.dataset.view===view));
+  setTimeout(() => { oldEl.classList.remove('slide-out-left','slide-out-right'); newEl.classList.remove('slide-in-right','slide-in-left'); }, 400);
+  if (view==='tips') { if (!cachedTips && state.appliances.length>0) fetchTips(); else if (state.appliances.length===0) renderTips(null); }
+  if (view==='grade') renderGrade();
+  if (view==='profile') renderProfile();
+}
+
+/* ========== ANECO TOGGLES ========== */
+function initAneco() {
+  const btn=document.getElementById('aneco-toggle'), body=document.getElementById('aneco-body');
+  btn.addEventListener('click', () => { const o = body.classList.toggle('open'); btn.classList.toggle('open', o); });
+  const bBtn=document.getElementById('bill-toggle'), bBody=document.getElementById('bill-body');
+  bBtn.addEventListener('click', () => { const o = bBody.classList.toggle('open'); bBtn.classList.toggle('open', o); });
+}
+
+function renderAll() { renderHome(); renderDevices(); renderGrade(); renderSettings(); setupExportButton(); if (currentView==='profile') renderProfile(); }
+
+/* ========== LOAD/SAVE ========== */
+async function load() {
+  try {
+    const a = await SECURE_STORAGE.getItem(KEYS.appliances); if (a) state.appliances = a;
+    const r = await SECURE_STORAGE.getItem(KEYS.rate); if (r!=null) state.rate = parseFloat(r);
+    const b = await SECURE_STORAGE.getItem(KEYS.budget); if (b!=null) state.budget = parseFloat(b);
+    const s = await SECURE_STORAGE.getItem(KEYS.subscription); if (s) state.subscription = s;
+    const t = await SECURE_STORAGE.getItem(KEYS.trialUsed); if (t!=null) state.trialUsed = !!t;
+    const bl = await SECURE_STORAGE.getItem(KEYS.bill); if (bl) state.bill = bl;
+    const ar = await SECURE_STORAGE.getItem(KEYS.anecoRates); if (ar) state.anecoRates = ar;
+    const h = await SECURE_STORAGE.getItem(KEYS.history); if (h) state.history = h;
+  } catch(e) { console.warn('Load error:', e); }
+}
+async function save() {
+  await SECURE_STORAGE.setItem(KEYS.appliances, state.appliances);
+  await SECURE_STORAGE.setItem(KEYS.rate, state.rate);
+  await SECURE_STORAGE.setItem(KEYS.budget, state.budget);
+  await SECURE_STORAGE.setItem(KEYS.subscription, state.subscription);
+  await SECURE_STORAGE.setItem(KEYS.trialUsed, state.trialUsed);
+  await SECURE_STORAGE.setItem(KEYS.bill, state.bill);
+  await SECURE_STORAGE.setItem(KEYS.anecoRates, state.anecoRates);
+  await SECURE_STORAGE.setItem(KEYS.history, state.history);
+}
+
+function updateClock() { const ph = new Intl.DateTimeFormat('en-PH', { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:true, timeZone:'Asia/Manila' }).format(new Date()); document.getElementById('clock').textContent = ph + ' PHT'; }
+
+window.openEditSheet = openEditSheet;
+window.deleteAppliance = deleteAppliance;
+
+window.initApp = async function(reload = false) {
+  state = { appliances:[], rate:12, budget:1000, subscription:null, trialUsed:false, bill:null, anecoRates:{}, history:[] };
+  cachedTips = null;
+  await load();
+  if (!appInitialized) {
+    appInitialized = true;
+    updateClock(); setInterval(updateClock, 1000);
+    initAneco(); initSettings(); initDonation();
     document.querySelectorAll('.nav-tab').forEach(tab => tab.addEventListener('click', () => switchView(tab.dataset.view)));
-    document.getElementById('fab').addEventListener('click', () => { editId = null; resetSheet(); openSheet(); });
+    document.getElementById('fab').addEventListener('click', () => { editId=null; resetSheet(); openSheet(); });
     document.getElementById('sheet-overlay').addEventListener('click', closeSheet);
     document.getElementById('sheet-cancel').addEventListener('click', closeSheet);
     document.getElementById('sheet-save').addEventListener('click', saveAppliance);
-    document.getElementById('seg-hr').addEventListener('click', () => { setUnit('hr'); document.getElementById('f-time').value = ''; });
-    document.getElementById('seg-min').addEventListener('click', () => { setUnit('min'); document.getElementById('f-time').value = ''; });
+    document.getElementById('seg-hr').addEventListener('click', () => { setUnit('hr'); document.getElementById('f-time').value=''; });
+    document.getElementById('seg-min').addEventListener('click', () => { setUnit('min'); document.getElementById('f-time').value=''; });
+    document.getElementById('tips-refresh-btn').addEventListener('click', () => { cachedTips=null; fetchTips(); });
+    document.getElementById('payment-overlay').addEventListener('click', closePaymentSheet);
+    document.getElementById('payment-close').addEventListener('click', closePaymentSheet);
+    document.getElementById('logout-btn').addEventListener('click', () => { if (typeof window.firebaseSignOut==='function') window.firebaseSignOut(); });
     document.querySelectorAll('.donate-amount-btn').forEach(btn => btn.addEventListener('click', () => vibrate(40)));
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSheet(); closeDonateModal(); } if (e.key === 'Enter' && document.getElementById('sheet').classList.contains('open')) saveAppliance(); });
-    document.getElementById('tips-refresh-btn').addEventListener('click', () => { cachedTips = null; fetchTips(); });
-    if (state.appliances.length === 0) renderTips(null);
+    document.addEventListener('keydown', e => { if (e.key==='Escape') { closeSheet(); closeDonateModal(); closePaymentSheet(); } if (e.key==='Enter' && document.getElementById('sheet').classList.contains('open')) saveAppliance(); });
   }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
-  } else {
-    initApp();
-  }
+  renderAll();
+  if (state.appliances.length === 0) renderTips(null);
+};
 </script>
-
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    });
-  }
+  if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
 </script>
 </body>
 </html>
