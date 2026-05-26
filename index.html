@@ -151,7 +151,6 @@
     .btn-edit { background: rgba(82,168,110,0.2); color: var(--c5); border: 1px solid rgba(82,168,110,0.3); }
     .btn-delete { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
     .tip-card { margin-bottom: 10px; position: relative; overflow: hidden; transition: transform 0.15s; animation: fadeInUp 0.4s ease backwards; }
-    .tip-card:nth-child(1){animation-delay:0.05s} .tip-card:nth-child(2){animation-delay:0.1s} .tip-card:nth-child(3){animation-delay:0.15s} .tip-card:nth-child(4){animation-delay:0.2s} .tip-card:nth-child(5){animation-delay:0.25s} .tip-card:nth-child(6){animation-delay:0.3s}
     .tip-card:active { transform: scale(0.97); }
     @keyframes fadeInUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
     .tip-emoji { font-size: 28px; margin-bottom: 8px; }
@@ -311,7 +310,7 @@
     <div class="view active" id="view-home">
       <div id="alerts-area"></div>
       <div class="hero-card">
-        <div class="hero-label">Estimated Monthly Bill (ANECO Detailed)</div>
+        <div class="hero-label">Estimated Monthly Bill </div>
         <div class="hero-amount"><span>₱</span><span id="hero-num">0.00</span></div>
         <div class="progress-bar"><div class="progress-fill green" id="hero-progress" style="width:0%"></div></div>
         <div class="budget-row"><span id="budget-used-lbl">₱0.00 used</span><span id="budget-left-lbl">₱1,000.00 left</span></div>
@@ -369,7 +368,7 @@
         <div class="donate-card-sub">EcoSaver is free & made with ❤️ by Filipino developers.<br>Your support keeps us going!</div>
         <button class="donate-btn" id="donate-open-btn">☕ Support via GCash</button>
       </div>
-      <div class="card"><div class="section-title">About</div><div class="about-text">EcoSaver v1.0.0<br>PWA • Firebase Auth • AES‑GCM encrypted storage<br>Optimized for Philippine households (ANECO) • General Electric Cooperatives<br>Data stored locally on your device per account.</div></div>
+      <div class="card"><div class="section-title">About</div><div class="about-text">EcoSaver v1.0.0<br>PWA • Firebase Auth • AES‑GCM encrypted storage<br>Optimized for Philippine households (ANECO) • General Electric Cooperatives<br>Data stored locally on your device per account.<br><strong>Offline support:</strong> Stay signed in even without internet.</div></div>
     </div>
   </div>
   <nav class="bottom-nav">
@@ -428,10 +427,10 @@
   <button class="sheet-btn sheet-btn-cancel" id="payment-close" style="margin-top:12px">Cancel</button>
 </div>
 
-<!-- ═══════════ FIREBASE AUTH (module) ═══════════ -->
+<!-- ═══════════ FIREBASE AUTH (module) with persistence ═══════════ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   const firebaseConfig = {
     apiKey: "AIzaSyAYQD-tz1pMYmbWl3Kcwd-8O7jQGwoJJiQ",
     authDomain: "ecosaver-9a4f8.firebaseapp.com",
@@ -443,6 +442,8 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
+  // IMPORTANT: set persistence to LOCAL so user stays logged in even offline
+  await setPersistence(auth, browserLocalPersistence);
   const loginContainer = document.getElementById('login-container');
   const appContainer = document.getElementById('app');
   const fab = document.getElementById('fab');
@@ -487,7 +488,7 @@
   });
 </script>
 
-<!-- ═══════════ MAIN APP SCRIPT ═══════════ -->
+<!-- ═══════════ MAIN APP SCRIPT with enhanced tips & formatted prototype bill ═══════════ -->
 <script>
 'use strict';
 /* ========== STORAGE ========== */
@@ -561,7 +562,6 @@ function getEmoji(name) {
 function freqMult(f) { return {daily:1,'3x':3/7,weekends:2/7,'1x':1/7}[f]||1; }
 function calcKwh(a) { const hrs=a.unit==='min'?a.rawTime/60:a.rawTime; let k=(a.watts*a.qty*hrs*freqMult(a.freq)*30)/1000; if (/ref|refrigerator|fridge|freezer/i.test(a.name)) k*=0.4; return k; }
 function getTotalKwh() { return state.appliances.reduce((s,a)=>s+calcKwh(a),0); }
-// NEW: compute ANECO total using current rates and kWh
 function computeAnecoTotal() {
   const kwh = getTotalKwh();
   if (kwh <= 0) return 0;
@@ -569,7 +569,7 @@ function computeAnecoTotal() {
   for (const section of ANECO_SECTIONS) {
     for (const item of section.items) {
       const r = (state.anecoRates && state.anecoRates[item.id] !== undefined) ? state.anecoRates[item.id] : item.rate;
-      if (item.perKw) continue; // not implemented
+      if (item.perKw) continue;
       if (item.fixed) total += r;
       else total += r * kwh + (item.extraFixed||0);
     }
@@ -577,7 +577,6 @@ function computeAnecoTotal() {
   return total;
 }
 function getEffectiveCost() {
-  // Use ANECO total if available and kWh>0, else fallback to simple rate
   const kwh = getTotalKwh();
   if (kwh > 0) {
     const anecoTotal = computeAnecoTotal();
@@ -655,10 +654,8 @@ function updateAnecoTotals() {
   });
   const tv = document.getElementById('aneco-total-val');
   if (tv) tv.textContent = fmtCurrency(grand);
-  // Also update hero card
   const heroNum = document.getElementById('hero-num');
   if (heroNum) heroNum.textContent = fmt(grand);
-  // Update budget row and progress based on new effective cost
   const cost = grand;
   const budget = state.budget;
   const pct = budget > 0 ? Math.min((cost / budget) * 100, 150) : 0;
@@ -668,12 +665,10 @@ function updateAnecoTotals() {
   document.getElementById('budget-used-lbl').textContent = fmtCurrency(cost) + ' used';
   const left = budget - cost;
   document.getElementById('budget-left-lbl').textContent = left >= 0 ? fmtCurrency(left) + ' left' : fmtCurrency(-left) + ' over';
-  // Update grade pill
   const grade = calcGrade();
   const pill = document.getElementById('grade-pill');
   pill.textContent = grade;
   pill.className = 'grade-pill ' + grade;
-  // Update alerts if needed
   const alerts = document.getElementById('alerts-area');
   const pctRaw = budget > 0 ? cost / budget : 0;
   alerts.innerHTML = '';
@@ -685,7 +680,7 @@ async function saveAnecoRates() {
   document.querySelectorAll('.aneco-rate-input').forEach(inp => { const v = parseFloat(inp.value); if (!isNaN(v)) rates[inp.dataset.id] = v; });
   state.anecoRates = rates;
   await SECURE_STORAGE.setItem(KEYS.anecoRates, rates);
-  updateAnecoTotals(); // refresh hero after saving
+  updateAnecoTotals();
 }
 
 /* ========== SUBSCRIPTION / PAYMENT ========== */
@@ -755,7 +750,7 @@ function renderProfile() {
 /* ========== BILL COMPARE ========== */
 function renderBillUpload() {
   const container = document.getElementById('bill-inner');
-  const { kwh: compKwh } = getTotalKwh(); // use total kWh
+  const compKwh = getTotalKwh();
   const compCost = getEffectiveCost();
   const bill = state.bill || { kwh: '', cost: '' };
   container.innerHTML = `
@@ -828,6 +823,142 @@ function initThreeBoxValidation() {
   });
 }
 
+/* ========== ENHANCED TIPS (ONLY based on actual appliances) ========== */
+function generateRichTips() {
+  const tips = [];
+  const hasAc = state.appliances.some(a => /air\s?con|aircon|ac\b|split|window unit/i.test(a.name));
+  const hasFan = state.appliances.some(a => /fan|electric fan/i.test(a.name));
+  const hasFridge = state.appliances.some(a => /ref|refrigerator|fridge|freezer/i.test(a.name));
+  const hasWashing = state.appliances.some(a => /washing|washer|laundry/i.test(a.name));
+  const hasLight = state.appliances.some(a => /light|lamp|bulb|led/i.test(a.name));
+  const hasComputer = state.appliances.some(a => /computer|pc|desktop|laptop/i.test(a.name));
+  const hasPhone = state.appliances.some(a => /phone|charger|mobile/i.test(a.name));
+  const hasWaterHeater = state.appliances.some(a => /water heater|heater|geyser/i.test(a.name));
+  const hasMicrowave = state.appliances.some(a => /microwave|oven|airfryer/i.test(a.name));
+  const hasRiceCooker = state.appliances.some(a => /rice cooker|cooker/i.test(a.name));
+  const hasIron = state.appliances.some(a => /iron|clothes iron/i.test(a.name));
+  const hasDispenser = state.appliances.some(a => /dispenser|water pump|pump/i.test(a.name));
+  const hasRouter = state.appliances.some(a => /router|wifi|modem/i.test(a.name));
+  
+  // Universal tips (always applicable)
+  tips.push({ emoji: '☀️', title: 'Use Natural Light', body: 'Open curtains during daytime instead of turning on lights. This can reduce lighting energy by up to 20%.', saving: '~₱50‑150/mo' });
+  tips.push({ emoji: '🌬️', title: 'Open Windows for Ventilation', body: 'Use fresh air and cross‑ventilation to cool your home before using fans or AC.', saving: '~₱100‑300/mo' });
+  tips.push({ emoji: '🔌', title: 'Unplug Idle Electronics', body: 'Many devices draw power even when off. Unplug phone chargers, TVs, and computers when not in use.', saving: '~₱50‑100/mo' });
+  
+  // Appliance-specific tips (only if user owns that type)
+  if (hasAc) {
+    tips.push({ emoji: '❄️', title: 'Optimize Air Conditioner', body: 'Set AC to 24‑26°C. Clean filters monthly and use timer. Every degree lower increases energy by 5‑8%.', saving: '~₱200‑500/mo' });
+    if (hasFan) {
+      tips.push({ emoji: '🌀', title: 'Use Fans with AC', body: 'Use ceiling fans to circulate cool air, allowing you to set the AC temperature 2‑3°C higher.', saving: '~₱150‑300/mo' });
+    } else {
+      tips.push({ emoji: '🌀', title: 'Try Electric Fans', body: 'Fans consume only 30‑75W vs 1000‑2000W for AC. Use fans when heat is tolerable.', saving: '~₱300‑800/mo' });
+    }
+  }
+  if (hasFridge) {
+    tips.push({ emoji: '🧊', title: 'Efficient Refrigerator Use', body: 'Keep fridge at 3‑5°C, freezer at -18°C. Clean condenser coils every 3 months and avoid overfilling.', saving: '~₱80‑200/mo' });
+  }
+  if (hasWashing) {
+    tips.push({ emoji: '🧺', title: 'Wash Clothes in Cold Water', body: 'Heating water accounts for 90% of washing machine energy. Use cold cycle and full loads.', saving: '~₱50‑150/mo' });
+  }
+  if (hasLight) {
+    tips.push({ emoji: '💡', title: 'Switch to LED Bulbs', body: 'LEDs use 75% less energy than incandescent and last 25 times longer.', saving: '~₱30‑100/mo' });
+  }
+  if (hasComputer) {
+    tips.push({ emoji: '💻', title: 'Manage Computer Power', body: 'Enable sleep mode after 15 minutes. Use laptop instead of desktop (uses 80% less energy).', saving: '~₱30‑80/mo' });
+  }
+  if (hasPhone) {
+    tips.push({ emoji: '📱', title: 'Unplug Phone Chargers', body: 'Phone chargers draw power even when no device is connected. Unplug after charging.', saving: '~₱10‑30/mo' });
+  }
+  if (hasWaterHeater) {
+    tips.push({ emoji: '🔥', title: 'Lower Water Heater Temperature', body: 'Set to 50‑55°C. Insulate pipes and take shorter showers.', saving: '~₱100‑250/mo' });
+  }
+  if (hasMicrowave) {
+    tips.push({ emoji: '🍳', title: 'Use Microwave Instead of Oven', body: 'Microwave uses up to 80% less energy than a conventional oven for small meals.', saving: '~₱40‑100/mo' });
+  }
+  if (hasRiceCooker) {
+    tips.push({ emoji: '🍚', title: 'Rice Cooker Efficiency', body: 'Soak rice for 30 minutes before cooking and unplug immediately after cooking.', saving: '~₱20‑50/mo' });
+  }
+  if (hasIron) {
+    tips.push({ emoji: '👔', title: 'Batch Ironing', body: 'Iron clothes in one session to avoid reheating the iron. Use lower heat for delicate fabrics.', saving: '~₱20‑60/mo' });
+  }
+  if (hasDispenser) {
+    tips.push({ emoji: '💧', title: 'Water Dispenser / Pump Savings', body: 'Turn off the hot water feature when not needed. Clean filters to maintain efficiency.', saving: '~₱30‑80/mo' });
+  }
+  if (hasRouter) {
+    tips.push({ emoji: '📡', title: 'Turn Off Router at Night', body: 'Switch off your modem and router when sleeping to save power and extend device life.', saving: '~₱20‑40/mo' });
+  }
+  
+  // Top 2 specific appliance tips (based on highest consumption)
+  const sortedByKwh = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a));
+  for (let i = 0; i < Math.min(2, sortedByKwh.length); i++) {
+    const a = sortedByKwh[i];
+    const k = calcKwh(a);
+    const reduction = k * 0.15; // 15% reduction
+    const saving = calcCost(reduction, state.rate);
+    // Avoid duplicate if already covered by generic category
+    if (!tips.some(t => t.title.includes(a.name))) {
+      tips.push({
+        emoji: getEmoji(a.name),
+        title: `Reduce ${a.name} usage`,
+        body: `Your ${a.name} (${a.watts}W) uses ${fmt(k,2)} kWh/mo. Cutting daily runtime by 30 minutes could save ~${fmtCurrency(saving)} per month.`,
+        saving: `~${fmtCurrency(saving)}/mo`
+      });
+    }
+  }
+  
+  // Remove duplicates by title
+  const seen = new Set();
+  const uniqueTips = tips.filter(t => {
+    if (seen.has(t.title)) return false;
+    seen.add(t.title);
+    return true;
+  });
+  return uniqueTips.slice(0, 12);
+}
+
+function renderTips(tips) {
+  tipsLoading = false;
+  const content = document.getElementById('tips-content'), btn = document.getElementById('tips-refresh-btn');
+  if (state.appliances.length === 0) { btn.style.display='none'; content.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-title">No appliances added</div><div class="empty-sub">Add appliances to get personalized energy saving tips.</div></div>`; return; }
+  btn.style.display = 'flex';
+  if (!tips || tips.length === 0) { 
+    const fallbackTips = generateRichTips();
+    content.innerHTML = fallbackTips.map((t,i) => `<div class="card tip-card" style="animation-delay:${i*0.04}s"><div class="tip-emoji">${esc(t.emoji)}</div><div class="tip-title">${esc(t.title)}</div><div class="tip-body">${esc(t.body)}</div><span class="tip-saving">${esc(t.saving)}</span></div>`).join('');
+    return;
+  }
+  content.innerHTML = tips.map((t,i) => `<div class="card tip-card" style="animation-delay:${i*0.04}s"><div class="tip-emoji">${esc(t.emoji)}</div><div class="tip-title">${esc(t.title)}</div><div class="tip-body">${esc(t.body)}</div><span class="tip-saving">${esc(t.saving)}</span></div>`).join('');
+}
+
+async function fetchTips() {
+  if (state.appliances.length === 0) { renderTips(null); return; }
+  if (tipsLoading) return;
+  tipsLoading = true;
+  document.getElementById('tips-content').innerHTML = `<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  document.getElementById('tips-refresh-btn').style.display = 'none';
+  // Try AI first, but fallback to rich tips
+  try {
+    const applianceNames = state.appliances.map(a => a.name).join(', ');
+    const prompt = `You are an energy-saving advisor for Philippine households. The user has these appliances: ${applianceNames}. Generate exactly 8 energy-saving tips. Rules:
+1. ONLY give tips relevant to the appliances they actually own.
+2. Include general lifestyle tips (natural light, open windows, unplugging idle devices) plus specific tips for their appliances.
+3. Each tip must include an emoji, title, body, and estimated monthly savings in ₱.
+4. Return ONLY a JSON array of 8 objects: {"emoji":"","title":"","body":"","saving":"~₱X/mo"}
+5. No markdown, no preamble.`;
+    const resp = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1200, messages:[{ role:'user', content:prompt }] }) });
+    const data = await resp.json();
+    const text = (data.content||[]).map(b=>b.text||'').join('');
+    const clean = text.replace(/```json|```/g,'').trim();
+    const aiTips = JSON.parse(clean);
+    if (Array.isArray(aiTips) && aiTips.length > 0) { cachedTips = aiTips; renderTips(aiTips); tipsLoading = false; return; }
+  } catch(e) { console.warn('AI tips failed, using rich fallback'); }
+  const richTips = generateRichTips();
+  cachedTips = richTips;
+  renderTips(richTips);
+  tipsLoading = false;
+}
+
+function buildApplianceList() { return state.appliances.map(a => { const k=calcKwh(a), t=a.unit==='min'?`${a.rawTime} min/day`:`${a.rawTime} hr/day`; return `- ${a.name} (${a.category||'General'}): ${a.watts}W × ${a.qty}, ${t}, ${a.freq}, ${fmt(k,2)} kWh/mo`; }).join('\n'); }
+
 /* ========== RENDER HOME ========== */
 function renderHome() {
   const kwh = getTotalKwh();
@@ -862,12 +993,12 @@ function renderHome() {
   const billSec = document.getElementById('bill-upload-section');
   if (isPremiumActive() && kwh > 0) { billSec.style.display = 'block'; renderBillUpload(); } else billSec.style.display = 'none';
   
-  // Three-box card: premium only
   const threeBoxCard = document.getElementById('three-box-card');
   if (threeBoxCard) {
     threeBoxCard.style.display = isPremiumActive() ? 'block' : 'none';
     if (isPremiumActive()) {
-      document.getElementById('prototype-bill').value = cost;
+      // Format the prototype bill to 2 decimals
+      document.getElementById('prototype-bill').value = fmt(cost);
     }
   }
   
@@ -905,40 +1036,6 @@ function renderGrade() {
   const msgs = { A:'Excellent! Your household is energy-efficient. Keep up the great habits!', C:'Approaching your budget limit. Consider reducing usage on high-consumption appliances.', F:'Over budget! Review your high-usage appliances and cut back where possible.' };
   const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b),state.rate) - calcCost(calcKwh(a),state.rate));
   gc.innerHTML = `<div class="grade-big"><div class="grade-letter ${g}">${g}</div><div class="grade-msg">${msgs[g]}<br><br>Using <b>${fmt(pct,1)}%</b> of your <b>${fmtCurrency(state.budget)}</b> budget.</div></div>${sorted.length ? `<div class="card"><div class="section-title">Appliance Breakdown</div>${sorted.map(a => { const k=calcKwh(a),c=calcCost(k,state.rate),ap=state.budget>0?c/state.budget*100:0; return `<div class="grade-appliance-row"><div class="ga-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="ga-right"><div class="mini-cost">${fmtCurrency(c)}</div><div class="ga-pct">${fmt(ap,1)}% of budget</div></div></div>` }).join('')}</div>` : ''}`;
-}
-
-/* ========== TIPS ========== */
-function buildApplianceList() { return state.appliances.map(a => { const k=calcKwh(a), t=a.unit==='min'?`${a.rawTime} min/day`:`${a.rawTime} hr/day`; return `- ${a.name}: ${a.watts}W × ${a.qty}, ${t}, ${a.freq}, ${fmt(k,2)} kWh/mo`; }).join('\n'); }
-async function fetchTips() {
-  if (state.appliances.length === 0) { renderTips(null); return; }
-  if (tipsLoading) return;
-  tipsLoading = true;
-  document.getElementById('tips-content').innerHTML = `<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-  document.getElementById('tips-refresh-btn').style.display = 'none';
-  const prompt = `You are an energy-saving advisor for Philippine households. The user has these appliances:\n${buildApplianceList()}\n\nGenerate exactly 6 energy-saving tips. Rules:\n1. Each tip must mention at least one of the user's actual appliances.\n2. No off-peak/time-of-day scheduling suggestions.\n3. Return ONLY a JSON array of 6 objects: {"emoji":"","title":"","body":"","saving":"~₱X/mo"}\n4. No markdown, no preamble.`;
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{ role:'user', content:prompt }] }) });
-    const data = await resp.json();
-    const text = (data.content||[]).map(b=>b.text||'').join('');
-    const clean = text.replace(/```json|```/g,'').trim();
-    const tips = JSON.parse(clean);
-    if (Array.isArray(tips) && tips.length > 0) { cachedTips = tips; renderTips(tips); tipsLoading = false; return; }
-  } catch(e) {}
-  const fb = generateFallbackTips(); cachedTips = fb; renderTips(fb); tipsLoading = false;
-}
-function generateFallbackTips() {
-  const sorted = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a));
-  const tips = [];
-  for (const a of sorted) { if (tips.length >= 6) break; const k = calcKwh(a); tips.push({ emoji: getEmoji(a.name), title: `Reduce ${a.name} runtime`, body: `Your ${a.name} (${a.watts}W × ${a.qty}) uses ${fmt(k,2)} kWh/mo. Try cutting daily usage by 30 minutes for meaningful savings.`, saving: `~${fmtCurrency(calcCost(k*0.15, state.rate))}/mo` }); }
-  return tips.slice(0,6);
-}
-function renderTips(tips) {
-  tipsLoading = false;
-  const content = document.getElementById('tips-content'), btn = document.getElementById('tips-refresh-btn');
-  if (state.appliances.length === 0) { btn.style.display='none'; content.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-title">No appliances added</div><div class="empty-sub">Add appliances to get personalized energy saving tips.</div></div>`; return; }
-  btn.style.display = 'flex';
-  if (!tips) { content.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-title">No tips yet</div><div class="empty-sub">Tap Refresh Tips to generate personalized savings advice.</div></div>`; return; }
-  content.innerHTML = tips.map((t,i) => `<div class="card tip-card" style="animation-delay:${i*0.06}s"><div class="tip-emoji">${esc(t.emoji)}</div><div class="tip-title">${esc(t.title)}</div><div class="tip-body">${esc(t.body)}</div><span class="tip-saving">${esc(t.saving)}</span></div>`).join('');
 }
 
 /* ========== SETTINGS ========== */
@@ -1034,7 +1131,7 @@ function switchView(view) {
   currentView = view;
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active', t.dataset.view===view));
   setTimeout(() => { oldEl.classList.remove('slide-out-left','slide-out-right'); newEl.classList.remove('slide-in-right','slide-in-left'); }, 400);
-  if (view==='tips') { if (!cachedTips && state.appliances.length>0) fetchTips(); else if (state.appliances.length===0) renderTips(null); }
+  if (view==='tips') { if (!cachedTips && state.appliances.length>0) fetchTips(); else if (state.appliances.length===0) renderTips(null); else if (cachedTips) renderTips(cachedTips); }
   if (view==='grade') renderGrade();
   if (view==='profile') renderProfile();
 }
@@ -1100,6 +1197,7 @@ window.initApp = async function(reload = false) {
   }
   renderAll();
   if (state.appliances.length === 0) renderTips(null);
+  else fetchTips();
 };
 </script>
 <script>
