@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ============ ALL STYLES (unchanged from previous working version) ============ */
+    /* ============ ALL STYLES (same as before) ============ */
     :root {
       --c0: #0d2218; --c1: #1a3a2a; --c2: #2d5a3d; --c3: #3d7a52; --c4: #52a86e; --c5: #8fd48c; --c6: #c8e8c0; --c7: #f4f0e6;
       --amber: #f59e0b; --red: #ef4444; --glass: rgba(29,58,42,0.55); --glass2: rgba(45,90,61,0.4);
@@ -381,6 +381,18 @@
   </nav>
 </div>
 
+<!-- Install banner -->
+<div id="installBanner" style="display: none; position: fixed; bottom: calc(var(--nav-h) + var(--safe-bot) + 10px); left: 16px; right: 16px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(143,212,140,0.3); border-radius: 20px; padding: 14px 16px; z-index: 60; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+  <div style="display: flex; align-items: center; gap: 12px; flex:1;">
+    <span style="font-size: 28px;">📱</span>
+    <span style="font-size: 13px; color: var(--c6);">Install EcoSaver as an app for faster access, offline support, and a home screen icon.</span>
+  </div>
+  <div style="display: flex; gap: 8px;">
+    <button id="installBtn" class="settings-btn btn-primary" style="padding: 6px 16px; font-size: 13px; margin:0;">Install</button>
+    <button id="dismissInstallBtn" class="settings-btn btn-secondary" style="padding: 6px 16px; font-size: 13px; margin:0;">Dismiss</button>
+  </div>
+</div>
+
 <button class="fab" id="fab" style="display:none;">+</button>
 
 <div id="login-container">
@@ -487,7 +499,7 @@
   });
 </script>
 
-<!-- ═══════════ MAIN APP SCRIPT with fixed vampire & matching totals ═══════════ -->
+<!-- ═══════════ MAIN APP SCRIPT with install banner logic ═══════════ -->
 <script>
 'use strict';
 /* ========== STORAGE ========== */
@@ -974,7 +986,7 @@ function renderHome() {
   if (state.appliances.length > 0 && kwh > 0) {
     const top = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a))[0];
     const topKwh = calcKwh(top);
-    const topCost = (topKwh / kwh) * cost; // proportional cost based on total ANECO bill
+    const topCost = (topKwh / kwh) * cost;
     vampArea.innerHTML = `<div class="vampire-card"><div class="section-title" style="color:#fca5a5">⚡ Energy Vampire</div><div class="vampire-name">${esc(getEmoji(top.name))} ${esc(top.name)}</div><div class="vampire-sub">${fmt(topKwh,2)} kWh/mo · ${fmtCurrency(topCost)}/mo</div></div>`;
   } else vampArea.innerHTML = '';
   
@@ -1197,6 +1209,47 @@ window.initApp = async function(reload = false) {
   if (state.appliances.length === 0) renderTips(null);
   else fetchTips();
 };
+
+// PWA Install Banner Logic
+let deferredInstallPrompt = null;
+const installBanner = document.getElementById('installBanner');
+const installBtn = document.getElementById('installBtn');
+const dismissBtn = document.getElementById('dismissInstallBtn');
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const bannerDismissed = localStorage.getItem('pwaInstallBannerDismissed') === 'true';
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!isStandalone && !bannerDismissed && installBanner) {
+    installBanner.style.display = 'flex';
+  }
+});
+
+if (installBtn) {
+  installBtn.addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') {
+        installBanner.style.display = 'none';
+        localStorage.removeItem('pwaInstallBannerDismissed');
+      }
+      deferredInstallPrompt = null;
+    }
+  });
+}
+
+if (dismissBtn) {
+  dismissBtn.addEventListener('click', () => {
+    installBanner.style.display = 'none';
+    localStorage.setItem('pwaInstallBannerDismissed', 'true');
+  });
+}
+
+if (isStandalone && installBanner) {
+  installBanner.style.display = 'none';
+}
 </script>
 <script>
   if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
