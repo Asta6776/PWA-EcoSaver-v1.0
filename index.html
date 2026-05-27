@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ============ ALL STYLES (unchanged) ============ */
+    /* ============ ALL STYLES (unchanged from previous working version) ============ */
     :root {
       --c0: #0d2218; --c1: #1a3a2a; --c2: #2d5a3d; --c3: #3d7a52; --c4: #52a86e; --c5: #8fd48c; --c6: #c8e8c0; --c7: #f4f0e6;
       --amber: #f59e0b; --red: #ef4444; --glass: rgba(29,58,42,0.55); --glass2: rgba(45,90,61,0.4);
@@ -310,7 +310,7 @@
     <div class="view active" id="view-home">
       <div id="alerts-area"></div>
       <div class="hero-card">
-        <div class="hero-label">Estimated Monthly Bill </div>
+        <div class="hero-label">Estimated Monthly Bill</div>
         <div class="hero-amount"><span>₱</span><span id="hero-num">0.00</span></div>
         <div class="progress-bar"><div class="progress-fill green" id="hero-progress" style="width:0%"></div></div>
         <div class="budget-row"><span id="budget-used-lbl">₱0.00 used</span><span id="budget-left-lbl">₱1,000.00 left</span></div>
@@ -442,7 +442,6 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
-  // IMPORTANT: set persistence to LOCAL so user stays logged in even offline
   await setPersistence(auth, browserLocalPersistence);
   const loginContainer = document.getElementById('login-container');
   const appContainer = document.getElementById('app');
@@ -488,7 +487,7 @@
   });
 </script>
 
-<!-- ═══════════ MAIN APP SCRIPT with enhanced tips & formatted prototype bill ═══════════ -->
+<!-- ═══════════ MAIN APP SCRIPT with fixed vampire & matching totals ═══════════ -->
 <script>
 'use strict';
 /* ========== STORAGE ========== */
@@ -840,12 +839,10 @@ function generateRichTips() {
   const hasDispenser = state.appliances.some(a => /dispenser|water pump|pump/i.test(a.name));
   const hasRouter = state.appliances.some(a => /router|wifi|modem/i.test(a.name));
   
-  // Universal tips (always applicable)
   tips.push({ emoji: '☀️', title: 'Use Natural Light', body: 'Open curtains during daytime instead of turning on lights. This can reduce lighting energy by up to 20%.', saving: '~₱50‑150/mo' });
   tips.push({ emoji: '🌬️', title: 'Open Windows for Ventilation', body: 'Use fresh air and cross‑ventilation to cool your home before using fans or AC.', saving: '~₱100‑300/mo' });
   tips.push({ emoji: '🔌', title: 'Unplug Idle Electronics', body: 'Many devices draw power even when off. Unplug phone chargers, TVs, and computers when not in use.', saving: '~₱50‑100/mo' });
   
-  // Appliance-specific tips (only if user owns that type)
   if (hasAc) {
     tips.push({ emoji: '❄️', title: 'Optimize Air Conditioner', body: 'Set AC to 24‑26°C. Clean filters monthly and use timer. Every degree lower increases energy by 5‑8%.', saving: '~₱200‑500/mo' });
     if (hasFan) {
@@ -888,14 +885,12 @@ function generateRichTips() {
     tips.push({ emoji: '📡', title: 'Turn Off Router at Night', body: 'Switch off your modem and router when sleeping to save power and extend device life.', saving: '~₱20‑40/mo' });
   }
   
-  // Top 2 specific appliance tips (based on highest consumption)
   const sortedByKwh = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a));
   for (let i = 0; i < Math.min(2, sortedByKwh.length); i++) {
     const a = sortedByKwh[i];
     const k = calcKwh(a);
-    const reduction = k * 0.15; // 15% reduction
+    const reduction = k * 0.15;
     const saving = calcCost(reduction, state.rate);
-    // Avoid duplicate if already covered by generic category
     if (!tips.some(t => t.title.includes(a.name))) {
       tips.push({
         emoji: getEmoji(a.name),
@@ -906,7 +901,6 @@ function generateRichTips() {
     }
   }
   
-  // Remove duplicates by title
   const seen = new Set();
   const uniqueTips = tips.filter(t => {
     if (seen.has(t.title)) return false;
@@ -935,7 +929,6 @@ async function fetchTips() {
   tipsLoading = true;
   document.getElementById('tips-content').innerHTML = `<div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
   document.getElementById('tips-refresh-btn').style.display = 'none';
-  // Try AI first, but fallback to rich tips
   try {
     const applianceNames = state.appliances.map(a => a.name).join(', ');
     const prompt = `You are an energy-saving advisor for Philippine households. The user has these appliances: ${applianceNames}. Generate exactly 8 energy-saving tips. Rules:
@@ -957,8 +950,6 @@ async function fetchTips() {
   tipsLoading = false;
 }
 
-function buildApplianceList() { return state.appliances.map(a => { const k=calcKwh(a), t=a.unit==='min'?`${a.rawTime} min/day`:`${a.rawTime} hr/day`; return `- ${a.name} (${a.category||'General'}): ${a.watts}W × ${a.qty}, ${t}, ${a.freq}, ${fmt(k,2)} kWh/mo`; }).join('\n'); }
-
 /* ========== RENDER HOME ========== */
 function renderHome() {
   const kwh = getTotalKwh();
@@ -978,10 +969,13 @@ function renderHome() {
   const pctRaw = state.budget > 0 ? cost / state.budget : 0;
   if (pctRaw > 1) alerts.innerHTML = `<div class="alert alert-danger">⚠️ Budget exceeded by ${fmtCurrency(cost - state.budget)}!</div>`;
   else if (pctRaw >= 0.8) alerts.innerHTML = `<div class="alert alert-warn">⚡ Approaching budget — ${fmt((1-pctRaw)*100,0)}% remaining.</div>`;
+  
   const vampArea = document.getElementById('vampire-area');
-  if (state.appliances.length > 0) {
-    const top = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a))[0], vk = calcKwh(top);
-    vampArea.innerHTML = `<div class="vampire-card"><div class="section-title" style="color:#fca5a5">⚡ Energy Vampire</div><div class="vampire-name">${esc(getEmoji(top.name))} ${esc(top.name)}</div><div class="vampire-sub">${fmt(vk,2)} kWh/mo · ${fmtCurrency(calcCost(vk, state.rate))}/mo</div></div>`;
+  if (state.appliances.length > 0 && kwh > 0) {
+    const top = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a))[0];
+    const topKwh = calcKwh(top);
+    const topCost = (topKwh / kwh) * cost; // proportional cost based on total ANECO bill
+    vampArea.innerHTML = `<div class="vampire-card"><div class="section-title" style="color:#fca5a5">⚡ Energy Vampire</div><div class="vampire-name">${esc(getEmoji(top.name))} ${esc(top.name)}</div><div class="vampire-sub">${fmt(topKwh,2)} kWh/mo · ${fmtCurrency(topCost)}/mo</div></div>`;
   } else vampArea.innerHTML = '';
   
   const anecoSec = document.getElementById('aneco-section');
@@ -997,7 +991,6 @@ function renderHome() {
   if (threeBoxCard) {
     threeBoxCard.style.display = isPremiumActive() ? 'block' : 'none';
     if (isPremiumActive()) {
-      // Format the prototype bill to 2 decimals
       document.getElementById('prototype-bill').value = fmt(cost);
     }
   }
@@ -1005,8 +998,8 @@ function renderHome() {
   const top5 = document.getElementById('top5-list');
   if (state.appliances.length === 0) top5.innerHTML = `<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">No appliances yet</div><div class="empty-sub">Tap + to add your first appliance.</div></div>`;
   else {
-    const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b),state.rate) - calcCost(calcKwh(a),state.rate)).slice(0,5);
-    top5.innerHTML = sorted.map(a => { const k = calcKwh(a), c = calcCost(k, state.rate); return `<div class="appliance-mini"><div class="mini-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="mini-cost">${fmtCurrency(c)}</div></div>`; }).join('');
+    const sorted = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a)).slice(0,5);
+    top5.innerHTML = sorted.map(a => { const k = calcKwh(a); const c = (k / kwh) * cost; return `<div class="appliance-mini"><div class="mini-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="mini-cost">${fmtCurrency(c)}</div></div>`; }).join('');
   }
 }
 
@@ -1014,8 +1007,11 @@ function renderHome() {
 function renderDevices() {
   const list = document.getElementById('devices-list');
   if (state.appliances.length === 0) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🔌</div><div class="empty-title">No appliances added</div><div class="empty-sub">Tap the + button to add your first appliance.</div></div>`; return; }
+  const totalKwh = getTotalKwh();
+  const totalCost = getEffectiveCost();
   list.innerHTML = state.appliances.map(a => {
-    const k = calcKwh(a), c = calcCost(k, state.rate);
+    const k = calcKwh(a);
+    const c = totalKwh > 0 ? (k / totalKwh) * totalCost : calcCost(k, state.rate);
     const timeStr = a.unit==='min' ? `${a.rawTime} min/day` : `${a.rawTime} hr/day`;
     const freqStr = {daily:'Daily','3x':'3×/week',weekends:'Weekends','1x':'1×/week'}[a.freq]||a.freq;
     return `<div class="card device-card">
@@ -1034,8 +1030,10 @@ function renderGrade() {
   const g = calcGrade();
   const pct = (cost / state.budget) * 100;
   const msgs = { A:'Excellent! Your household is energy-efficient. Keep up the great habits!', C:'Approaching your budget limit. Consider reducing usage on high-consumption appliances.', F:'Over budget! Review your high-usage appliances and cut back where possible.' };
-  const sorted = [...state.appliances].sort((a,b) => calcCost(calcKwh(b),state.rate) - calcCost(calcKwh(a),state.rate));
-  gc.innerHTML = `<div class="grade-big"><div class="grade-letter ${g}">${g}</div><div class="grade-msg">${msgs[g]}<br><br>Using <b>${fmt(pct,1)}%</b> of your <b>${fmtCurrency(state.budget)}</b> budget.</div></div>${sorted.length ? `<div class="card"><div class="section-title">Appliance Breakdown</div>${sorted.map(a => { const k=calcKwh(a),c=calcCost(k,state.rate),ap=state.budget>0?c/state.budget*100:0; return `<div class="grade-appliance-row"><div class="ga-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="ga-right"><div class="mini-cost">${fmtCurrency(c)}</div><div class="ga-pct">${fmt(ap,1)}% of budget</div></div></div>` }).join('')}</div>` : ''}`;
+  const sorted = [...state.appliances].sort((a,b) => calcKwh(b) - calcKwh(a));
+  const totalKwh = getTotalKwh();
+  const totalCost = cost;
+  gc.innerHTML = `<div class="grade-big"><div class="grade-letter ${g}">${g}</div><div class="grade-msg">${msgs[g]}<br><br>Using <b>${fmt(pct,1)}%</b> of your <b>${fmtCurrency(state.budget)}</b> budget.</div></div>${sorted.length ? `<div class="card"><div class="section-title">Appliance Breakdown</div>${sorted.map(a => { const k=calcKwh(a); const c = totalKwh > 0 ? (k / totalKwh) * totalCost : calcCost(k, state.rate); const ap = state.budget > 0 ? (c / state.budget) * 100 : 0; return `<div class="grade-appliance-row"><div class="ga-left"><div class="mini-emoji">${esc(getEmoji(a.name))}</div><div><div class="mini-name">${esc(a.name)}</div><div class="mini-kwh">${fmt(k,2)} kWh/mo</div></div></div><div class="ga-right"><div class="mini-cost">${fmtCurrency(c)}</div><div class="ga-pct">${fmt(ap,1)}% of budget</div></div></div>` }).join('')}</div>` : ''}`;
 }
 
 /* ========== SETTINGS ========== */
